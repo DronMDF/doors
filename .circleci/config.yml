@@ -1,0 +1,30 @@
+version: 2.0
+
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby
+    steps:
+      - checkout
+      - run: |
+          # get latest cmake
+          wget https://cmake.org/files/v3.13/cmake-3.13.1-Linux-x86_64.sh
+          sudo bash cmake-3.13.1-Linux-x86_64.sh --skip-license --prefix=/usr
+          # Prerequesties
+          sudo apt-get install cppcheck lcov python3-pip
+          sudo pip3 install cpplint conan
+          gem install pdd
+          conan remote add dronmdf https://api.bintray.com/conan/mdf/2out
+          conan remote add bincrafter https://api.bintray.com/conan/bincrafters/public-conan
+          # Change directory for build
+          mkdir ~/build
+          cd ~/build
+          # Build etc
+          conan install ~/project -s compiler.libcxx='libstdc++11' --build=missing
+          cmake -DCMAKE_CXX_FLAGS="--coverage" ~/project
+          make style
+          make VERBOSE=1
+          make test
+          bash <(curl -s https://codecov.io/bash) -R ~/project
+      - store_test_results:
+          path: ~/build/test-results
