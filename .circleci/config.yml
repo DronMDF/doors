@@ -19,7 +19,7 @@ jobs:
           # Change directory for build
           mkdir ~/build
           cd ~/build
-          # Build etc
+          # Build
           conan install ~/project -s compiler.libcxx='libstdc++11' --build=missing
           cmake -DCMAKE_CXX_FLAGS="--coverage" ~/project
           make style
