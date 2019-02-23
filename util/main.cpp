@@ -7,6 +7,7 @@
 #include <args.hxx>
 #include <asio/ts/buffer.hpp>
 #include <asio/ts/internet.hpp>
+#include <Protocol.h>
 
 using namespace std;
 using asio::ip::udp;
@@ -34,42 +35,32 @@ void inventory_command(args::Subparser *parser)
 		to_string(args::get(port))
 	).begin();
 
-	// @todo #7 Specify protocol in Protocol.h
-	struct InitRequest {
-		uint32_t command = 0;
-	} __attribute__((packed));
-
-	InitRequest request;
+	InventoryRequest request;
 	socket.send_to(asio::buffer(&request, sizeof(request)), endpoint);
 
 	uint8_t reply_data[1400];
 	udp::endpoint sender_endpoint;
 	size_t reply_length = socket.receive_from(asio::buffer(reply_data, 1400), sender_endpoint);
 
-	struct InitReply {
-		uint32_t command = 0x80000000;
-		uint32_t lock_count;
-	} __attribute__((packed));
-
-	if (reply_length < sizeof(InitReply)) {
+	if (reply_length < sizeof(InventoryReply)) {
 		cout << "Wrong Init reply" << endl;
 		return;
 	}
 
-	InitReply *reply = reinterpret_cast<InitReply *>(&reply_data[0]);
-	if (reply->command != 0x80000000) {
+	InventoryReply *reply = reinterpret_cast<InventoryReply *>(&reply_data[0]);
+	if (reply->command != C2S_INVENTORY) {
 		cout << "Wrong Init reply command" << endl;
 		return;
 	}
 
-	if (reply_length < sizeof(InitReply) + reply->lock_count * sizeof(uint32_t)) {
+	if (reply_length < sizeof(InventoryReply) + reply->lock_count * sizeof(uint32_t)) {
 		cout << "Wrong Init reply content" << endl;
 		return;
 	}
 
 	vector<uint32_t> locks(
-		reinterpret_cast<uint32_t *>(&reply_data[sizeof(InitReply)]),
-		reinterpret_cast<uint32_t *>(&reply_data[sizeof(InitReply)]) + reply->lock_count
+		reinterpret_cast<uint32_t *>(&reply_data[sizeof(InventoryReply)]),
+		reinterpret_cast<uint32_t *>(&reply_data[sizeof(InventoryReply)]) + reply->lock_count
 	);
 
 	cout << "Controller: #" << sender_endpoint.address() << endl;
