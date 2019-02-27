@@ -51,6 +51,7 @@ enum State: uint32_t {
 	CLOSED = 1,
 };
 
+// @todo #3 Необходимо использовать сетевой порядок байт для версии и для кодов
 struct InventoryRequest {
 	uint32_t version = VERSION;
 	uint32_t command = S2C_INVENTORY;
