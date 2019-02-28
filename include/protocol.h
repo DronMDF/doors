@@ -51,22 +51,21 @@ enum State: uint32_t {
 	CLOSED = 1,
 };
 
-// @todo #3 Необходимо использовать сетевой порядок байт для версии и для кодов
 struct InventoryRequest {
-	uint32_t version = VERSION;
-	uint32_t command = S2C_INVENTORY;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(S2C_INVENTORY);
 } __attribute__((packed));
 
 struct InventoryReply {
-	uint32_t version = VERSION;
-	uint32_t command = C2S_INVENTORY;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(C2S_INVENTORY);
 	uint32_t lock_count;		// Количество замков
 } __attribute__((packed));
 // uint32_t locks[];		// Список замков после структуры
 
 struct ConfigRequest {
-	uint32_t version = VERSION;
-	uint32_t command = S2C_CONFIG;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(S2C_CONFIG);
 	uint32_t lock_no;		// Номер замка
 	uint32_t timeout;		// Время ожидания ответа от сервера
 	uint32_t ntry;			// Количество попыток обращения к серверу
@@ -75,21 +74,21 @@ struct ConfigRequest {
 // uint64_t keys[];		// Список мастерключей после структуры
 
 struct ConfigReply {
-	uint32_t version = VERSION;
-	uint32_t command = C2S_CONFIG;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(C2S_CONFIG);
 	uint32_t lock_no;
 	uint32_t status;
 } __attribute__((packed));
 
 struct KeyStatusRequest {
-	uint32_t version = VERSION;
-	uint32_t command = C2S_KEY_STATUS;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(C2S_KEY_STATUS);
 	uint64_t key;
 } __attribute__((packed));
 
 struct KeyStatusReply {
-	uint32_t version = VERSION;
-	uint32_t command = S2C_KEY_STATUS;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(S2C_KEY_STATUS);
 	uint64_t key;
 	uint64_t contract;		// Номер договора? в каком формате должен быть?
 	uint32_t expired;		// время окончания действия, в секундах с эпохи.
@@ -100,15 +99,15 @@ struct KeyStatusReply {
 // Но если мы хотим донести это до пользователя - нужно номер замка странслировать в номер ящика
 
 struct LockRequest {
-	uint32_t version = VERSION;
-	uint32_t command = C2S_LOCK;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(C2S_LOCK);
 	uint32_t lock_no;		// Номер замка
 	uint64_t key;			// Номер ключа
 } __attribute__((packed));
 
 struct LockReply {
-	uint32_t version = VERSION;
-	uint32_t command = S2C_LOCK;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(S2C_LOCK);
 	uint32_t lock_no;		// Номер замка
 	uint64_t key;			// Номер ключа
 	uint32_t approve;		// Подтверждение
@@ -116,15 +115,15 @@ struct LockReply {
 } __attribute__((packed));
 
 struct UnlockRequest {
-	uint32_t version = VERSION;
-	uint32_t command = C2S_UNLOCK;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(C2S_UNLOCK);
 	uint32_t lock_no;		// Номер замка
 	uint64_t key;			// Номер ключа
 } __attribute__((packed));
 
 struct UnlockReply {
-	uint32_t version = VERSION;
-	uint32_t command = S2C_UNLOCK;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(S2C_UNLOCK);
 	uint32_t lock_no;		// Номер замка
 	uint64_t key;			// Номер ключа
 	uint32_t approve;		// Подтверждение
@@ -132,14 +131,14 @@ struct UnlockReply {
 } __attribute__((packed));
 
 struct StateRequest {
-	uint32_t version = VERSION;
-	uint32_t command = S2C_STATE;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(S2C_STATE);
 	uint32_t lock_no;		// Номер замка
 } __attribute__((packed));
 
 struct StateReply {
-	uint32_t version = VERSION;
-	uint32_t command = C2S_STATE;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(C2S_STATE);
 	uint32_t lock_no;		// Номер замка
 	uint64_t key;			// Идентификатор ключа
 	uint32_t state;			// Закрыт/открыт State
@@ -147,7 +146,7 @@ struct StateReply {
 } __attribute__((packed));
 
 struct IdentRequest {
-	uint32_t version = VERSION;
-	uint32_t command = S2C_IDENT;
+	uint32_t version = htonl(VERSION);
+	uint32_t command = htonl(S2C_IDENT);
 	uint32_t lock_no;		// Номер замка
 } __attribute__((packed));

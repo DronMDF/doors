@@ -7,7 +7,7 @@
 #include <args.hxx>
 #include <asio/ts/buffer.hpp>
 #include <asio/ts/internet.hpp>
-#include <Protocol.h>
+#include <protocol.h>
 
 using namespace std;
 using asio::ip::udp;
@@ -48,25 +48,31 @@ void inventory_command(args::Subparser *parser)
 	}
 
 	InventoryReply *reply = reinterpret_cast<InventoryReply *>(&reply_data[0]);
-	if (reply->command != C2S_INVENTORY) {
+	if (ntohl(reply->version) != VERSION) {
+		cout << "Wrong protool version" << endl;
+		return;
+	}
+
+	if (ntohl(reply->command) != C2S_INVENTORY) {
 		cout << "Wrong Init reply command" << endl;
 		return;
 	}
 
-	if (reply_length < sizeof(InventoryReply) + reply->lock_count * sizeof(uint32_t)) {
+	const auto lock_count = ntohl(reply->lock_count);
+	if (reply_length < sizeof(InventoryReply) + lock_count * sizeof(uint32_t)) {
 		cout << "Wrong Init reply content" << endl;
 		return;
 	}
 
 	vector<uint32_t> locks(
 		reinterpret_cast<uint32_t *>(&reply_data[sizeof(InventoryReply)]),
-		reinterpret_cast<uint32_t *>(&reply_data[sizeof(InventoryReply)]) + reply->lock_count
+		reinterpret_cast<uint32_t *>(&reply_data[sizeof(InventoryReply)]) + lock_count
 	);
 
 	cout << "Controller: #" << sender_endpoint.address() << endl;
 	cout << "Locks:" << endl;
 	for (const auto &l : locks) {
-		cout << "\t" << l << endl;
+		cout << "\t" << ntohl(l) << endl;
 	}
 }
 
