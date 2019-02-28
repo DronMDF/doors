@@ -7,7 +7,7 @@
 #include <args.hxx>
 #include <asio/ts/buffer.hpp>
 #include <asio/ts/internet.hpp>
-#include <Protocol.h>
+#include <protocol.h>
 
 using namespace std;
 using asio::ip::udp;
