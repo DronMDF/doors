@@ -12,11 +12,16 @@
 using namespace std;
 using asio::ip::udp;
 
-class server
+// @todo #13 Вынести класс в отдельный файл, и переименовать заодно.
+class server final : public enable_shared_from_this<server>
 {
 public:
 	server(asio::io_context *io_context, in_port_t port)
 		: socket_(*io_context, udp::endpoint(udp::v4(), port)), data_(1024)
+	{
+	}
+
+	void start()
 	{
 		do_receive();
 	}
@@ -26,28 +31,70 @@ public:
 		socket_.async_receive_from(
 			asio::buffer(data_),
 			sender_endpoint_,
-		        [this](error_code ec, size_t bytes_recvd) {
-				if (!ec && bytes_recvd > 0) {
-					do_send(bytes_recvd);
-				} else {
-					do_receive();
-				}
-			}
+			bind(
+				&server::handle_receive,
+				shared_from_this(),
+				placeholders::_1,
+				placeholders::_2
+			)
 		);
+	}
+
+	void process_request(size_t bytes_recvd)
+	{
+		if (bytes_recvd < sizeof(uint32_t) * 2) {
+			throw runtime_error("Invalid request");
+		}
+
+		const auto *req = reinterpret_cast<InventoryRequest *>(&data_[0]);
+		if (ntohl(req->version) != VERSION) {
+			throw runtime_error("Invalid request version");
+		}
+
+		if (ntohl(req->command) == S2C_INVENTORY) {
+			InventoryReply reply;
+			// @todo #13 Наполнить ответ содержимым
+			//  и содержимое должно соответствоать настройкам эмулятора.
+			memcpy(&data_[0], &reply, sizeof(reply));
+			do_send(sizeof(reply));
+			return;
+		}
+
+		throw runtime_error("Unknown request command");
+	}
+
+	void handle_receive(error_code ec, size_t bytes_recvd)
+	{
+		try {
+			if (ec) {
+				throw system_error(ec, "Unable to receive");
+			}
+
+			process_request(bytes_recvd);
+			return;
+		} catch(const exception &e) {
+			cout << e.what() << endl;
+		}
+		do_receive();
 	}
 
 	void do_send(size_t length)
 	{
-		// @todo #3 Этот класс взят из примера и отвечает эхом
-		//  Должен эмулировать поведение реального замка
-		//  и отвечать на запрос инвентаризации
 		socket_.async_send_to(
 			asio::buffer(data_, length),
 			sender_endpoint_,
-			[this](error_code /*ec*/, size_t /*bytes_sent*/) {
-				do_receive();
-			}
+			bind(
+				&server::handle_send,
+				shared_from_this(),
+				placeholders::_1,
+				placeholders::_2
+			)
 		);
+	}
+
+	void handle_send(error_code ec [[gnu::unused]], size_t bytes_sent [[gnu::unused]])
+	{
+		do_receive();
 	}
 
 private:
@@ -66,7 +113,7 @@ int main(int argc, char **argv)
 		parser.ParseCLI(argc, argv);
 
 		asio::io_context io_context;
-		server s(&io_context, args::get(port));
+		make_shared<server>(&io_context, args::get(port))->start();
 		io_context.run();
 	} catch (const args::Help &) {
 		cout << parser;
