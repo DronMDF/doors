@@ -59,7 +59,7 @@ struct InventoryRequest {
 struct InventoryReply {
 	uint32_t version = htonl(VERSION);
 	uint32_t command = htonl(C2S_INVENTORY);
-	uint32_t lock_count;		// Количество замков
+	uint32_t lock_count = 0;		// Количество замков
 } __attribute__((packed));
 // uint32_t locks[];		// Список замков после структуры
 
