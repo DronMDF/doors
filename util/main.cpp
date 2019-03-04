@@ -40,6 +40,8 @@ void inventory_command(args::Subparser *parser)
 
 	uint8_t reply_data[1400];
 	udp::endpoint sender_endpoint;
+	// @todo #2 Необходимо установить таймаут на данную операцию.
+	//  3 секунды наверное хватит c головой
 	size_t reply_length = socket.receive_from(asio::buffer(reply_data, 1400), sender_endpoint);
 
 	if (reply_length < sizeof(InventoryReply)) {
