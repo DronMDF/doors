@@ -6,12 +6,16 @@
 #include "Listener.h"
 #include <functional>
 #include <iostream>
+#include "Action.h"
 
 using namespace std;
 using asio::ip::udp;
 
-Listener::Listener(asio::io_context *io_context, in_port_t port)
-	: socket_(*io_context, udp::endpoint(udp::v4(), port)), data_(1024)
+Listener::Listener(
+	asio::io_context *io_context,
+	in_port_t port,
+	const std::shared_ptr<const Action> &action
+) : socket_(*io_context, udp::endpoint(udp::v4(), port)), data_(1024), action(action)
 {
 }
 
@@ -36,15 +40,13 @@ void Listener::do_receive()
 
 void Listener::process_request(size_t bytes_recvd)
 {
-	if (bytes_recvd < sizeof(uint32_t) * 2) {
-		throw runtime_error("Invalid request");
+	auto et = data_.begin();
+	advance(et, bytes_recvd);
+	// @todo #21 Необходимо создать объект-сокет, в который можно будет отправлять данные
+	//  Причем делать это не сейчас и синхронно, а потом. И этот объект съест do_send
+	if (!action->process(vector<uint8_t>(data_.begin(), et), {})) {
+		throw runtime_error("Unknown request command");
 	}
-
-	// @todo #2 Необходимо сделать диспетчер сообщений
-	//  которому можно будет привязать как запросы к серверу,
-	//  так и запросы к эмулятору контроллера.
-	//  И этот класс станет универсальным.
-	throw runtime_error("Unknown request command");
 }
 
 void Listener::handle_receive(error_code ec, size_t bytes_recvd)
@@ -55,7 +57,6 @@ void Listener::handle_receive(error_code ec, size_t bytes_recvd)
 		}
 
 		process_request(bytes_recvd);
-		return;
 	} catch(const exception &e) {
 		cout << e.what() << endl;
 	}
