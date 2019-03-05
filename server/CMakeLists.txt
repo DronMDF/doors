@@ -19,6 +19,7 @@ ADD_EXECUTABLE(
 	doors-server
 	main.cpp
 	Listener.cpp
+	StatusAction.cpp
 )
 
 TARGET_LINK_LIBRARIES(

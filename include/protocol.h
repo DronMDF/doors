@@ -4,6 +4,7 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
+#include <arpa/inet.h>
 
 const uint32_t VERSION = 1;
 

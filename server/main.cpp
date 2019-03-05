@@ -7,6 +7,7 @@
 #include <args.hxx>
 #include <asio/ts/internet.hpp>
 #include "Listener.h"
+#include "StatusAction.h"
 
 using namespace std;
 using asio::ip::udp;
@@ -21,7 +22,11 @@ int main(int argc, char **argv)
 		parser.ParseCLI(argc, argv);
 
 		asio::io_context io_context;
-		make_shared<Listener>(&io_context, args::get(port))->start();
+		make_shared<Listener>(
+			&io_context,
+			args::get(port),
+			make_shared<StatusAction>()
+		)->start();
 		io_context.run();
 	} catch (const args::Help &) {
 		cout << parser;
