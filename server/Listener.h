@@ -25,10 +25,8 @@ private:
 	void do_receive();
 	void handle_receive(std::error_code ec, size_t bytes_recvd);
 	void process_request(size_t bytes_recvd);
-	void do_send(size_t length);
-	void handle_send(std::error_code ec, size_t bytes_sent);
 
-	asio::ip::udp::socket socket_;
+	const std::shared_ptr<asio::ip::udp::socket> socket_;
 	asio::ip::udp::endpoint sender_endpoint_;
 	std::vector<uint8_t> data_;
 	const std::shared_ptr<const Action> action;
