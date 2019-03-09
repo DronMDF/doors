@@ -4,13 +4,15 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #include "StatusAction.h"
+#include <cstring>
 #include <protocol.h>
+#include "Socket.h"
 
 using namespace std;
 
 bool StatusAction::process(
 	const vector<uint8_t> &request,
-	const shared_ptr<Socket> &socket [[gnu::unused]]
+	const shared_ptr<Socket> &socket
 ) const
 {
 	if (request.size() < sizeof(KeyStatusRequest)) {
@@ -26,6 +28,10 @@ bool StatusAction::process(
 	reply.key = req->key;
 	// @todo #21 Необходимо по номеру ключа достать всю необходимую информацию из БД,
 	//  или из кеша.
+
+	vector<uint8_t> rv(sizeof(reply));
+	memcpy(&rv[0], &reply, sizeof(reply));
+	socket->send(rv);
 
 	return true;
 }

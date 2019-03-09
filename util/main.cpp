@@ -78,6 +78,36 @@ void inventory_command(args::Subparser *parser)
 	}
 }
 
+void status_command(args::Subparser *parser)
+{
+	args::Positional<std::string> ip(*parser, "ip", "Controller ip", args::Options::Required);
+	args::Positional<int> token(*parser, "token", "Token", args::Options::Required);
+	parser->Parse();
+
+	cout << "status " << args::get(ip) << ":" << args::get(port)
+		<< ", token "  << args::get(token) << endl;
+
+	asio::io_context context;
+
+	udp::socket socket(context, udp::endpoint(udp::v4(), 0));
+
+	udp::resolver resolver(context);
+	const auto endpoint = *resolver.resolve(
+		udp::v4(),
+		args::get(ip),
+		to_string(args::get(port))
+	).begin();
+
+	KeyStatusRequest request;
+	socket.send_to(asio::buffer(&request, sizeof(request)), endpoint);
+
+	uint8_t reply_data[1400];
+	udp::endpoint sender_endpoint;
+	socket.receive_from(asio::buffer(reply_data, 1400), sender_endpoint);
+
+	// @todo #24 Разобрать status ответ от сервера
+}
+
 int main(int argc, char **argv)
 {
 	args::ArgumentParser parser("Doors utility.", "Footer.");
@@ -90,7 +120,12 @@ int main(int argc, char **argv)
 		"Controler inventory",
 		[](args::Subparser &parser){ inventory_command(&parser); }
 	);
-
+	args::Command status(
+		commands,
+		"status",
+		"Status",
+		[](args::Subparser &parser){ status_command(&parser); }
+	);
 
 	try {
 		parser.ParseCLI(argc, argv);
