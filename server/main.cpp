@@ -6,8 +6,8 @@
 #include <iostream>
 #include <args.hxx>
 #include <asio/ts/internet.hpp>
+#include <server.core/StatusAction.h>
 #include "Listener.h"
-#include "StatusAction.h"
 
 using namespace std;
 using asio::ip::udp;
@@ -25,6 +25,7 @@ int main(int argc, char **argv)
 		make_shared<Listener>(
 			&io_context,
 			args::get(port),
+			// @todo #29 Создать класс диспетчер для разруливания запросов
 			make_shared<StatusAction>()
 		)->start();
 		io_context.run();

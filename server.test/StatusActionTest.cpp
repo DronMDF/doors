@@ -6,7 +6,7 @@
 #include "StatusActionTest.h"
 #include <protocol.h>
 #include <2out/2out.h>
-#include <server/StatusAction.h>
+#include <server.core/StatusAction.h>
 #include "ActionRepr.h"
 
 using namespace std;

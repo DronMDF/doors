@@ -4,7 +4,7 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
-#include <server/Socket.h>
+#include <server.core/Socket.h>
 
 class TestSocket final : public Socket {
 public:

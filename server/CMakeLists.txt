@@ -20,11 +20,11 @@ ADD_EXECUTABLE(
 	main.cpp
 	AsioSocket.cpp
 	Listener.cpp
-	StatusAction.cpp
 )
 
 TARGET_LINK_LIBRARIES(
 	doors-server
+	server-core
 	${CMAKE_THREAD_LIBS_INIT}
 )
 
