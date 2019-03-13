@@ -1,18 +1,17 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(server-test)
 
-
 ADD_EXECUTABLE(
 	server-test
 	test.cpp
 	ActionRepr.cpp
 	StatusActionTest.cpp
 	TestSocket.cpp
-	../server/StatusAction.cpp
 )
 
 TARGET_LINK_LIBRARIES(
 	server-test
+	server-core
 	2out
 )
 

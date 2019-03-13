@@ -6,7 +6,7 @@
 #pragma once
 #include <memory>
 #include <2out/2out.h>
-#include <server/Action.h>
+#include <server.core/Action.h>
 
 class ActionRepr final : public oout::Representation {
 public:
