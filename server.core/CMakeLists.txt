@@ -15,5 +15,7 @@ ADD_COMPILE_OPTIONS(
 
 ADD_LIBRARY(
 	server-core
+	ImmediatlyScheduler.cpp
 	StatusAction.cpp
+	StatusTask.cpp
 )
