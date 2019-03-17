@@ -6,6 +6,7 @@
 #include <iostream>
 #include <args.hxx>
 #include <asio/ts/internet.hpp>
+#include <server.core/ImmediatlyScheduler.h>
 #include <server.core/StatusAction.h>
 #include "Listener.h"
 
@@ -22,11 +23,13 @@ int main(int argc, char **argv)
 		parser.ParseCLI(argc, argv);
 
 		asio::io_context io_context;
+		// @todo #32: Необходим обобщенный интерфейс к хранилищу.
+		// За одним интерфейсом будут скрываться разные операции, как с памятью, так и с 1C.
 		make_shared<Listener>(
 			&io_context,
 			args::get(port),
 			// @todo #29 Создать класс диспетчер для разруливания запросов
-			make_shared<StatusAction>()
+			make_shared<StatusAction>(make_shared<ImmediatlyScheduler>())
 		)->start();
 		io_context.run();
 	} catch (const args::Help &) {

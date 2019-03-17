@@ -6,10 +6,17 @@
 #pragma once
 #include "Action.h"
 
+class Scheduler;
+
 class StatusAction final : public Action {
 public:
+	explicit StatusAction(const std::shared_ptr<Scheduler> &scheduler);
+
 	bool process(
 		const std::vector<uint8_t> &request,
 		const std::shared_ptr<Socket> &socket
 	) const override;
+
+private:
+	const std::shared_ptr<Scheduler> scheduler;
 };

@@ -6,6 +6,7 @@
 #include "StatusActionTest.h"
 #include <protocol.h>
 #include <2out/2out.h>
+#include <server.core/ImmediatlyScheduler.h>
 #include <server.core/StatusAction.h>
 #include "ActionRepr.h"
 
@@ -18,7 +19,9 @@ StatusActionTest::StatusActionTest()
 			"StatusActionTest return nothing",
 			make_shared<TestEqual>(
 				make_shared<ActionRepr>(
-					make_shared<StatusAction>(),
+					make_shared<StatusAction>(
+						make_shared<ImmediatlyScheduler>()
+					),
 					vector<uint32_t>{
 						1,
 						C2S_KEY_STATUS,

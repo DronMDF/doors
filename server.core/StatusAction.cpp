@@ -6,14 +6,17 @@
 #include "StatusAction.h"
 #include <cstring>
 #include <protocol.h>
-#include "Socket.h"
+#include "Scheduler.h"
+#include "StatusTask.h"
 
 using namespace std;
 
-bool StatusAction::process(
-	const vector<uint8_t> &request,
-	const shared_ptr<Socket> &socket
-) const
+StatusAction::StatusAction(const shared_ptr<Scheduler> &scheduler)
+	: scheduler(scheduler)
+{
+}
+
+bool StatusAction::process(const vector<uint8_t> &request, const shared_ptr<Socket> &socket) const
 {
 	if (request.size() < sizeof(KeyStatusRequest)) {
 		return false;
@@ -24,14 +27,6 @@ bool StatusAction::process(
 		return false;
 	}
 
-	KeyStatusReply reply;
-	reply.key = req->key;
-	// @todo #21 Необходимо по номеру ключа достать всю необходимую информацию из БД,
-	//  или из кеша.
-
-	vector<uint8_t> rv(sizeof(reply));
-	memcpy(&rv[0], &reply, sizeof(reply));
-	socket->send(rv);
-
+	scheduler->schedule(make_shared<StatusTask>(*req, socket));
 	return true;
 }
