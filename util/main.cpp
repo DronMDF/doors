@@ -35,7 +35,7 @@ void inventory_command(args::Subparser *parser)
 		to_string(args::get(port))
 	).begin();
 
-	InventoryRequest request;
+	InventoryReq request;
 	socket.send_to(asio::buffer(&request, sizeof(request)), endpoint);
 
 	uint8_t reply_data[1400];
@@ -44,31 +44,31 @@ void inventory_command(args::Subparser *parser)
 	//  3 секунды наверное хватит c головой
 	size_t reply_length = socket.receive_from(asio::buffer(reply_data, 1400), sender_endpoint);
 
-	if (reply_length < sizeof(InventoryReply)) {
+	if (reply_length < sizeof(Inventory)) {
 		cout << "Wrong Init reply" << endl;
 		return;
 	}
 
-	InventoryReply *reply = reinterpret_cast<InventoryReply *>(&reply_data[0]);
+	Inventory *reply = reinterpret_cast<Inventory *>(&reply_data[0]);
 	if (ntohl(reply->version) != VERSION) {
 		cout << "Wrong protool version" << endl;
 		return;
 	}
 
-	if (ntohl(reply->command) != C2S_INVENTORY) {
+	if (ntohl(reply->command) != INVENTORY) {
 		cout << "Wrong Init reply command" << endl;
 		return;
 	}
 
 	const auto lock_count = ntohl(reply->lock_count);
-	if (reply_length < sizeof(InventoryReply) + lock_count * sizeof(uint32_t)) {
+	if (reply_length < sizeof(Inventory) + lock_count * sizeof(uint32_t)) {
 		cout << "Wrong Init reply content" << endl;
 		return;
 	}
 
 	vector<uint32_t> locks(
-		reinterpret_cast<uint32_t *>(&reply_data[sizeof(InventoryReply)]),
-		reinterpret_cast<uint32_t *>(&reply_data[sizeof(InventoryReply)]) + lock_count
+		reinterpret_cast<uint32_t *>(&reply_data[sizeof(Inventory)]),
+		reinterpret_cast<uint32_t *>(&reply_data[sizeof(Inventory)]) + lock_count
 	);
 
 	cout << "Controller: #" << sender_endpoint.address() << endl;
