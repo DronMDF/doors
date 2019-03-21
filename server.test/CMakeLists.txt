@@ -7,6 +7,7 @@ ADD_EXECUTABLE(
 	ActionRepr.cpp
 	StatusActionTest.cpp
 	TestSocket.cpp
+	TestStorage.cpp
 )
 
 TARGET_LINK_LIBRARIES(

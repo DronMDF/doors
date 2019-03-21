@@ -11,8 +11,11 @@
 
 using namespace std;
 
-StatusAction::StatusAction(const shared_ptr<Scheduler> &scheduler)
-	: scheduler(scheduler)
+StatusAction::StatusAction(
+	const shared_ptr<Storage> &storage,
+	const shared_ptr<Scheduler> &scheduler
+)
+	: storage(storage), scheduler(scheduler)
 {
 }
 
@@ -27,6 +30,6 @@ bool StatusAction::process(const vector<uint8_t> &request, const shared_ptr<Sock
 		return false;
 	}
 
-	scheduler->schedule(make_shared<StatusTask>(*req, socket));
+	scheduler->schedule(make_shared<StatusTask>(*req, socket, storage));
 	return true;
 }
