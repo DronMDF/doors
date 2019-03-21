@@ -23,13 +23,13 @@ StatusActionTest::StatusActionTest()
 						make_shared<ImmediatlyScheduler>()
 					),
 					vector<uint32_t>{
-						1,
-						C2S_KEY_STATUS,
+						1, KEY_STATUS_REQ, 0,
 						0, 1
 					}
 				),
 				"00000001 "
-				"00000002 "
+				"00000007 "
+				"00000000 "
 				"00000000 00000001 "
 				"00000000 00000000 "
 				"ffffffff "

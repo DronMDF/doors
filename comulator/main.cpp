@@ -46,13 +46,13 @@ public:
 			throw runtime_error("Invalid request");
 		}
 
-		const auto *req = reinterpret_cast<InventoryRequest *>(&data_[0]);
+		const auto *req = reinterpret_cast<InventoryReq *>(&data_[0]);
 		if (ntohl(req->version) != VERSION) {
 			throw runtime_error("Invalid request version");
 		}
 
-		if (ntohl(req->command) == S2C_INVENTORY) {
-			InventoryReply reply;
+		if (ntohl(req->command) == INVENTORY_REQ) {
+			Inventory reply;
 			// @todo #13 Наполнить ответ содержимым
 			//  и содержимое должно соответствоать настройкам эмулятора.
 			memcpy(&data_[0], &reply, sizeof(reply));

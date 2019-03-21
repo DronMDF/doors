@@ -17,7 +17,7 @@ StatusTask::StatusTask(const KeyStatusRequest &request, const shared_ptr<Socket>
 
 void StatusTask::run() const
 {
-	KeyStatusReply reply;
+	KeyStatus reply;
 	reply.key = request.key;
 	// @todo #21 Необходимо по номеру ключа достать всю необходимую информацию из БД,
 	//  или из кеша.

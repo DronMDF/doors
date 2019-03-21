@@ -23,7 +23,7 @@ bool StatusAction::process(const vector<uint8_t> &request, const shared_ptr<Sock
 	}
 
 	const auto *req = reinterpret_cast<const KeyStatusRequest *>(&request[0]);
-	if (ntohl(req->command) != C2S_KEY_STATUS) {
+	if (ntohl(req->command) != KEY_STATUS_REQ) {
 		return false;
 	}
 
