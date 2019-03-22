@@ -24,8 +24,6 @@ int main(int argc, char **argv)
 		parser.ParseCLI(argc, argv);
 
 		asio::io_context io_context;
-		// @todo #32: Необходим обобщенный интерфейс к хранилищу.
-		// За одним интерфейсом будут скрываться разные операции, как с памятью, так и с 1C.
 		make_shared<Listener>(
 			&io_context,
 			args::get(port),
