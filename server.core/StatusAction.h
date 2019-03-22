@@ -7,10 +7,14 @@
 #include "Action.h"
 
 class Scheduler;
+class Storage;
 
 class StatusAction final : public Action {
 public:
-	explicit StatusAction(const std::shared_ptr<Scheduler> &scheduler);
+	StatusAction(
+		const std::shared_ptr<Storage> &storage,
+		const std::shared_ptr<Scheduler> &scheduler
+	);
 
 	bool process(
 		const std::vector<uint8_t> &request,
@@ -18,5 +22,6 @@ public:
 	) const override;
 
 private:
+	const std::shared_ptr<Storage> storage;
 	const std::shared_ptr<Scheduler> scheduler;
 };

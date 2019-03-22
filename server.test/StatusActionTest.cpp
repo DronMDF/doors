@@ -9,6 +9,7 @@
 #include <server.core/ImmediatlyScheduler.h>
 #include <server.core/StatusAction.h>
 #include "ActionRepr.h"
+#include "TestStorage.h"
 
 using namespace std;
 using namespace oout;
@@ -20,6 +21,12 @@ StatusActionTest::StatusActionTest()
 			make_shared<TestEqual>(
 				make_shared<ActionRepr>(
 					make_shared<StatusAction>(
+						make_shared<TestStorage>(
+							"/status/0000000000000001",
+							nlohmann::json(
+								{"balance", 0x777}
+							)
+						),
 						make_shared<ImmediatlyScheduler>()
 					),
 					vector<uint32_t>{
@@ -33,7 +40,7 @@ StatusActionTest::StatusActionTest()
 				"00000000 00000001 "
 				"00000000 00000000 "
 				"ffffffff "
-				"00000000 "
+				"00000777 "
 				"00000000 "
 			)
 		)

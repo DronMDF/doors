@@ -8,13 +8,19 @@
 #include "Task.h"
 
 class Socket;
+class Storage;
 
 class StatusTask final : public Task {
 public:
-	StatusTask(const KeyStatusRequest &request, const std::shared_ptr<Socket> &socket);
+	StatusTask(
+		const KeyStatusRequest &request,
+		const std::shared_ptr<Socket> &socket,
+		const std::shared_ptr<Storage> &storage
+	);
 
 	void run() const override;
 private:
 	const KeyStatusRequest request;
 	const std::shared_ptr<Socket> socket;
+	const std::shared_ptr<Storage> storage;
 };

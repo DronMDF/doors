@@ -7,6 +7,7 @@
 #include <args.hxx>
 #include <asio/ts/internet.hpp>
 #include <server.core/ImmediatlyScheduler.h>
+#include <server.core/NullStorage.h>
 #include <server.core/StatusAction.h>
 #include "Listener.h"
 
@@ -29,7 +30,13 @@ int main(int argc, char **argv)
 			&io_context,
 			args::get(port),
 			// @todo #29 Создать класс диспетчер для разруливания запросов
-			make_shared<StatusAction>(make_shared<ImmediatlyScheduler>())
+			make_shared<StatusAction>(
+				// @todo #34 Интерфейс для доступа к дефолтным значениям
+				//  Пока нет доступа к 1С, БД не должна фейлить запрос, а
+				//  должна, с помощью декоратора, возвращать дефолтные значения.
+				make_shared<NullStorage>(),
+				make_shared<ImmediatlyScheduler>()
+			)
 		)->start();
 		io_context.run();
 	} catch (const args::Help &) {
