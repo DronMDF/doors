@@ -9,6 +9,7 @@
 #include <server.core/ImmediatlyScheduler.h>
 #include <server.core/StatusAction.h>
 #include "ActionRepr.h"
+#include "SaboteurStorage.h"
 #include "TestStorage.h"
 
 using namespace std;
@@ -16,32 +17,60 @@ using namespace oout;
 
 StatusActionTest::StatusActionTest()
 	: tests(
-		make_shared<TestNamed>(
-			"StatusActionTest return nothing",
-			make_shared<TestEqual>(
-				make_shared<ActionRepr>(
-					make_shared<StatusAction>(
-						make_shared<TestStorage>(
-							"/status/0000000000000001",
-							nlohmann::json(
-								{"balance", 0x777}
-							)
+		make_shared<TestSuite>(
+			make_shared<TestNamed>(
+				"StatusAction return something",
+				make_shared<TestEqual>(
+					make_shared<ActionRepr>(
+						make_shared<StatusAction>(
+							make_shared<TestStorage>(
+								"/status/0000000000000001",
+								// @todo #38 use balance
+								//  instead of money term
+								R"({
+									"money": 1911,
+									"expired": 4294967295
+								})"_json
+							),
+							make_shared<ImmediatlyScheduler>()
 						),
-						make_shared<ImmediatlyScheduler>()
+						vector<uint32_t>{
+							1, KEY_STATUS_REQ, 0,
+							0, 1
+						}
 					),
-					vector<uint32_t>{
-						1, KEY_STATUS_REQ, 0,
-						0, 1
-					}
-				),
-				"00000001 "
-				"00000007 "
-				"00000000 "
-				"00000000 00000001 "
-				"00000000 00000000 "
-				"ffffffff "
-				"00000777 "
-				"00000000 "
+					"00000001 "
+					"00000007 "
+					"00000000 "
+					"00000000 00000001 "
+					"00000000 00000000 "
+					"ffffffff "
+					"00000777 "
+					"00000000 "
+				)
+			),
+			make_shared<TestNamed>(
+				"StatusAction return defaults if not exists",
+				make_shared<TestEqual>(
+					make_shared<ActionRepr>(
+						make_shared<StatusAction>(
+							make_shared<SaboteurStorage>(),
+							make_shared<ImmediatlyScheduler>()
+						),
+						vector<uint32_t>{
+							1, KEY_STATUS_REQ, 0,
+							0, 1
+						}
+					),
+					"00000001 "
+					"00000007 "
+					"00000000 "
+					"00000000 00000001 "
+					"00000000 00000000 "
+					"00000000 "	// Нет времени
+					"00000000 "
+					"00000000 "
+				)
 			)
 		)
 	)
