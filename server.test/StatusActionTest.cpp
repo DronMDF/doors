@@ -25,8 +25,8 @@ StatusActionTest::StatusActionTest()
 						make_shared<StatusAction>(
 							make_shared<TestStorage>(
 								"/status/0000000000000001",
-								// @todo #38 use balance
-								//  instead of money term
+								// @todo #38 Слово balance
+								//  лучше подходит
 								R"({
 									"money": 1911,
 									"expired": 4294967295
@@ -67,7 +67,7 @@ StatusActionTest::StatusActionTest()
 					"00000000 "
 					"00000000 00000001 "
 					"00000000 00000000 "
-					"00000000 "	// Нет времени
+					"00000000 "		// Нет времени
 					"00000000 "
 					"00000000 "
 				)
