@@ -29,9 +29,6 @@ int main(int argc, char **argv)
 			args::get(port),
 			// @todo #29 Создать класс диспетчер для разруливания запросов
 			make_shared<StatusAction>(
-				// @todo #34 Интерфейс для доступа к дефолтным значениям
-				//  Пока нет доступа к 1С, БД не должна фейлить запрос, а
-				//  должна, с помощью декоратора, возвращать дефолтные значения.
 				make_shared<NullStorage>(),
 				make_shared<ImmediatlyScheduler>()
 			)

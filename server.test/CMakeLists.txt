@@ -5,6 +5,7 @@ ADD_EXECUTABLE(
 	server-test
 	test.cpp
 	ActionRepr.cpp
+	SaboteurStorage.cpp
 	StatusActionTest.cpp
 	TestSocket.cpp
 	TestStorage.cpp
