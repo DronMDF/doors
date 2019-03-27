@@ -13,6 +13,7 @@ class Action {
 public:
 	virtual ~Action() = default;
 
+	// @todo #31 При такой реализации DispatchedAction нет необходимости в коде возврата
 	virtual bool process(
 		const std::vector<uint8_t> &request,
 		const std::shared_ptr<Socket> &socket

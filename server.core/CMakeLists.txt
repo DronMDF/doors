@@ -16,6 +16,7 @@ ADD_COMPILE_OPTIONS(
 ADD_LIBRARY(
 	server-core
 	DefaultStorage.cpp
+	DispatchedAction.cpp
 	ImmediatlyScheduler.cpp
 	NullStorage.cpp
 	StatusAction.cpp
