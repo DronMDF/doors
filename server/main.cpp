@@ -6,6 +6,8 @@
 #include <iostream>
 #include <args.hxx>
 #include <asio/ts/internet.hpp>
+#include <protocol.h>
+#include <server.core/DispatchedAction.h>
 #include <server.core/ImmediatlyScheduler.h>
 #include <server.core/NullStorage.h>
 #include <server.core/StatusAction.h>
@@ -27,10 +29,12 @@ int main(int argc, char **argv)
 		make_shared<Listener>(
 			&io_context,
 			args::get(port),
-			// @todo #29 Создать класс диспетчер для разруливания запросов
-			make_shared<StatusAction>(
-				make_shared<NullStorage>(),
-				make_shared<ImmediatlyScheduler>()
+			make_shared<DispatchedAction>(
+				KEY_STATUS_REQ,
+				make_shared<StatusAction>(
+					make_shared<NullStorage>(),
+					make_shared<ImmediatlyScheduler>()
+				)
 			)
 		)->start();
 		io_context.run();
