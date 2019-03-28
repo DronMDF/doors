@@ -4,6 +4,7 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #include <iostream>
+#include <iomanip>
 #include <args.hxx>
 #include <asio/ts/buffer.hpp>
 #include <asio/ts/internet.hpp>
@@ -17,6 +18,12 @@ args::HelpFlag help(arguments, "help", "Display this help menu", {'h', "help"});
 args::ValueFlag<int> port(arguments, "port", "communication port", {'p'}, 5000);
 
 // @todo #4 Convert command to class
+
+// @todo #27 Много однообразных операций по проверке
+//  Можно ли все команды инкапсулировать в одном классе?
+//  Но поскольку наборы полей разные -
+//  не все операции в этом классе будут применимы в одинаковой степени.
+//  Или всетаки на каждую команду отдельный враппер?
 void inventory_command(args::Subparser *parser)
 {
 	args::Positional<std::string> ip(*parser, "ip", "Controller ip", args::Options::Required);
@@ -74,18 +81,22 @@ void inventory_command(args::Subparser *parser)
 	cout << "Controller: #" << sender_endpoint.address() << endl;
 	cout << "Locks:" << endl;
 	for (const auto &l : locks) {
-		cout << "\t" << ntohl(l) << endl;
+		cout << "\t" << be32toh(l) << endl;
 	}
 }
 
 void status_command(args::Subparser *parser)
 {
 	args::Positional<std::string> ip(*parser, "ip", "Controller ip", args::Options::Required);
-	args::Positional<int> token(*parser, "token", "Token", args::Options::Required);
+	args::Positional<std::string> token(*parser, "token", "Token", args::Options::Required);
 	parser->Parse();
 
+	uint64_t key = 0;
+	istringstream in(args::get(token));
+	in >> hex >> key;
+
 	cout << "status " << args::get(ip) << ":" << args::get(port)
-		<< ", token "  << args::get(token) << endl;
+		<< ", token "  << hex << setw(16) << setfill('0') << key << endl;
 
 	asio::io_context context;
 
@@ -99,13 +110,49 @@ void status_command(args::Subparser *parser)
 	).begin();
 
 	KeyStatusRequest request;
+	request.key = htobe64(key);
 	socket.send_to(asio::buffer(&request, sizeof(request)), endpoint);
 
 	uint8_t reply_data[1400];
 	udp::endpoint sender_endpoint;
-	socket.receive_from(asio::buffer(reply_data, 1400), sender_endpoint);
+	size_t reply_length = socket.receive_from(asio::buffer(reply_data, 1400), sender_endpoint);
 
-	// @todo #24 Разобрать status ответ от сервера
+	if (reply_length < sizeof(KeyStatus)) {
+		cout << "Wrong KeyStatus reply" << endl;
+		return;
+	}
+
+	KeyStatus *reply = reinterpret_cast<KeyStatus *>(&reply_data[0]);
+	if (ntohl(reply->version) != VERSION) {
+		cout << "Wrong protool version" << endl;
+		return;
+	}
+
+	if (ntohl(reply->command) != KEY_STATUS) {
+		cout << "Wrong KeyStatus reply command" << endl;
+		return;
+	}
+
+	const auto lock_count = be32toh(reply->lock_count);
+	if (reply_length < sizeof(KeyStatus) + lock_count * sizeof(uint32_t)) {
+		cout << "Wrong Init reply content" << endl;
+		return;
+	}
+
+	cout << "Контракт: "
+		<< hex << setw(16) << setfill('0') << be64toh(reply->contract) << endl;
+	cout << "Срок действия до: " << be32toh(reply->expired) << endl;
+	cout << "Баланс: " << be32toh(reply->money) << "коп" << endl;
+
+	vector<uint32_t> locks(
+		reinterpret_cast<uint32_t *>(&reply_data[sizeof(KeyStatus)]),
+		reinterpret_cast<uint32_t *>(&reply_data[sizeof(KeyStatus)]) + lock_count
+	);
+
+	cout << "Locks:" << endl;
+	for (const auto &l : locks) {
+		cout << "\t" << be32toh(l) << endl;
+	}
 }
 
 int main(int argc, char **argv)
