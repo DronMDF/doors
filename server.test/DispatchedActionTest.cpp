@@ -4,7 +4,7 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #include "DispatchedActionTest.h"
-#include <server.core/DispatchedAction.h>
+#include <core/DispatchedAction.h>
 #include "ActionRepr.h"
 #include "TestAction.h"
 

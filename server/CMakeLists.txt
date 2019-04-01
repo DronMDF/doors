@@ -24,7 +24,7 @@ ADD_EXECUTABLE(
 
 TARGET_LINK_LIBRARIES(
 	doors-server
-	server-core
+	core
 	${CMAKE_THREAD_LIBS_INIT}
 )
 

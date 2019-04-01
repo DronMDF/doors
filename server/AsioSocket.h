@@ -6,7 +6,7 @@
 #pragma once
 #include <memory>
 #include <asio/ts/internet.hpp>
-#include <server.core/Socket.h>
+#include <core/Socket.h>
 
 class AsioSocket final : public Socket {
 public:

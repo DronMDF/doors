@@ -5,7 +5,7 @@
 
 #include "TestAction.h"
 #include <cstring>
-#include <server.core/Socket.h>
+#include <core/Socket.h>
 
 using namespace std;
 

@@ -4,7 +4,7 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
-#include <server.core/Storage.h>
+#include <core/Storage.h>
 
 class SaboteurStorage final : public Storage {
 public:

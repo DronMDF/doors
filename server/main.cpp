@@ -7,10 +7,10 @@
 #include <args.hxx>
 #include <asio/ts/internet.hpp>
 #include <protocol.h>
-#include <server.core/DispatchedAction.h>
-#include <server.core/ImmediatlyScheduler.h>
-#include <server.core/NullStorage.h>
-#include <server.core/StatusAction.h>
+#include <core/DispatchedAction.h>
+#include <core/ImmediatlyScheduler.h>
+#include <core/NullStorage.h>
+#include <core/StatusAction.h>
 #include "Listener.h"
 
 using namespace std;

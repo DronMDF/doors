@@ -15,7 +15,7 @@ ADD_EXECUTABLE(
 
 TARGET_LINK_LIBRARIES(
 	server-test
-	server-core
+	core
 	2out
 )
 

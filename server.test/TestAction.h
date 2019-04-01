@@ -4,7 +4,7 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
-#include <server.core/Action.h>
+#include <core/Action.h>
 
 class TestAction final : public Action {
 public:
