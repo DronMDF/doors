@@ -18,8 +18,6 @@ ADD_COMPILE_OPTIONS(
 ADD_EXECUTABLE(
 	doors-server
 	main.cpp
-	AsioSocket.cpp
-	Listener.cpp
 )
 
 TARGET_LINK_LIBRARIES(
