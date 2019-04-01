@@ -6,6 +6,7 @@ ADD_EXECUTABLE(
 	test.cpp
 	ActionRepr.cpp
 	DispatchedActionTest.cpp
+	InventoryActionTest.cpp
 	SaboteurStorage.cpp
 	StatusActionTest.cpp
 	TestAction.cpp

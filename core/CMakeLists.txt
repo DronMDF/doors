@@ -19,6 +19,7 @@ ADD_LIBRARY(
 	DefaultStorage.cpp
 	DispatchedAction.cpp
 	ImmediatlyScheduler.cpp
+	InventoryAction.cpp
 	Listener.cpp
 	NullStorage.cpp
 	StatusAction.cpp
