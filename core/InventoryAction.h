@@ -4,22 +4,20 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
-#include <core/Action.h>
+#include "Action.h"
 
-class TestAction final : public Action {
+class Storage;
+
+// Этот класс используется из comulator, и ему не нужен планировщик
+class InventoryAction final : public Action {
 public:
-	explicit TestAction(const std::vector<uint32_t> &reply);
-
-	template<typename ... T>
-	TestAction(uint32_t arg, T ... args)
-		: TestAction(std::vector<uint32_t>{arg, args...})
-	{
-	}
+	explicit InventoryAction(const std::shared_ptr<Storage> &storage);
 
 	bool process(
 		const std::vector<uint8_t> &request,
 		const std::shared_ptr<Socket> &socket
 	) const override;
+
 private:
-	const std::vector<uint32_t> reply;
+	const std::shared_ptr<Storage> storage;
 };

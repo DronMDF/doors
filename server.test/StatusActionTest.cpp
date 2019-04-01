@@ -6,8 +6,8 @@
 #include "StatusActionTest.h"
 #include <protocol.h>
 #include <2out/2out.h>
-#include <server.core/ImmediatlyScheduler.h>
-#include <server.core/StatusAction.h>
+#include <core/ImmediatlyScheduler.h>
+#include <core/StatusAction.h>
 #include "ActionRepr.h"
 #include "SaboteurStorage.h"
 #include "TestStorage.h"

@@ -6,6 +6,7 @@ ADD_EXECUTABLE(
 	test.cpp
 	ActionRepr.cpp
 	DispatchedActionTest.cpp
+	InventoryActionTest.cpp
 	SaboteurStorage.cpp
 	StatusActionTest.cpp
 	TestAction.cpp
@@ -15,7 +16,7 @@ ADD_EXECUTABLE(
 
 TARGET_LINK_LIBRARIES(
 	server-test
-	server-core
+	core
 	2out
 )
 

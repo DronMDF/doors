@@ -18,13 +18,11 @@ ADD_COMPILE_OPTIONS(
 ADD_EXECUTABLE(
 	doors-server
 	main.cpp
-	AsioSocket.cpp
-	Listener.cpp
 )
 
 TARGET_LINK_LIBRARIES(
 	doors-server
-	server-core
+	core
 	${CMAKE_THREAD_LIBS_INIT}
 )
 
