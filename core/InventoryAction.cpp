@@ -46,7 +46,7 @@ bool InventoryAction::process(
 	}
 
 	Inventory reply;
-	reply.id = req->id;	// be32
+	reply.id = req->id;		// be32
 	reply.lock_count = htobe32(rl.size());
 	vector<uint8_t> rv(sizeof(reply) + sizeof(uint32_t) * rl.size());
 	memcpy(&rv[0], &reply, sizeof(reply));
