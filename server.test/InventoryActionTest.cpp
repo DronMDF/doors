@@ -8,6 +8,7 @@
 #include <core/InventoryAction.h>
 #include <core/NullStorage.h>
 #include "ActionRepr.h"
+#include "TestStorage.h"
 
 using namespace std;
 using namespace oout;
@@ -28,6 +29,31 @@ InventoryActionTest::InventoryActionTest()
 					"00000004 "
 					"00000000 "
 					"00000000 "
+				)
+			),
+			make_shared<TestNamed>(
+				"InventoryAction return list of locks",
+				make_shared<TestEqual>(
+					make_shared<ActionRepr>(
+						make_shared<InventoryAction>(
+							make_shared<TestStorage>(
+								"/locks",
+								R"({
+									"locks": [1, 2, 3, 4, 5]
+								})"_json
+							)
+						),
+						vector<uint32_t>{1, INVENTORY_REQ, 0x777}
+					),
+					"00000001 "
+					"00000004 "
+					"00000777 "
+					"00000005 "
+					"00000001 "
+					"00000002 "
+					"00000003 "
+					"00000004 "
+					"00000005 "
 				)
 			)
 		)

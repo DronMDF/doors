@@ -9,7 +9,7 @@ using namespace std;
 
 nlohmann::json NullStorage::query(const string &query [[gnu::unused]]) const
 {
-	throw runtime_error("No result");
+	return nlohmann::json::object();
 }
 
 void NullStorage::update(
