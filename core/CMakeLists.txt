@@ -16,10 +16,13 @@ ADD_COMPILE_OPTIONS(
 ADD_LIBRARY(
 	core
 	AsioSocket.cpp
+	ChainBytes.cpp
 	DefaultStorage.cpp
 	DispatchedAction.cpp
 	ImmediatlyScheduler.cpp
 	InventoryAction.cpp
+	InventoryBytes.cpp
+	List32Bytes.cpp
 	Listener.cpp
 	NullStorage.cpp
 	StatusAction.cpp

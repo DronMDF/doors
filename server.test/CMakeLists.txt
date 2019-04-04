@@ -5,8 +5,12 @@ ADD_EXECUTABLE(
 	server-test
 	test.cpp
 	ActionRepr.cpp
+	BytesRepr.cpp
+	ChainBytesTest.cpp
 	DispatchedActionTest.cpp
 	InventoryActionTest.cpp
+	InventoryBytesTest.cpp
+	List32BytesTest.cpp
 	SaboteurStorage.cpp
 	StatusActionTest.cpp
 	TestAction.cpp
