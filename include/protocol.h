@@ -65,8 +65,8 @@ struct Inventory {
 	uint32_t command = htonl(INVENTORY);
 	uint32_t id = 0;
 } __attribute__((packed));
-//	uint32_t lock_count = 0;	// Количество замков
-//	uint32_t locks[];		// Список замков после структуры
+	// uint32_t lock_count = 0;	// Количество замков
+	// uint32_t locks[];		// Список замков после структуры
 
 struct Config {
 	uint32_t version = htonl(VERSION);

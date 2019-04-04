@@ -38,10 +38,6 @@ bool InventoryAction::process(
 		throw runtime_error("Unknown request command");
 	}
 
-	// @todo #18 Необходим объект типа InventoryReply,
-	//  который будет формироваться из request'а и дополняться списком замков.
-	//  Из всего этого добра будет сформирован байтовый массив asBytes()
-
 	const auto data = DefaultStorage(
 		storage,
 		R"({ "locks": [] })"_json
