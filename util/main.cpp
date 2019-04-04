@@ -67,7 +67,8 @@ void inventory_command(args::Subparser *parser)
 		return;
 	}
 
-	const auto lock_count = ntohl(reply->lock_count);
+	// @todo #49 lock_count не входит в reply, надо парсить последующие байты
+	const auto lock_count = 0;		// ntohl(reply->lock_count);
 	if (reply_length < sizeof(Inventory) + lock_count * sizeof(uint32_t)) {
 		cout << "Wrong Init reply content" << endl;
 		return;

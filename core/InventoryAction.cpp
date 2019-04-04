@@ -7,8 +7,11 @@
 #include <cstring>
 #include <endian.h>
 #include <protocol.h>
+#include "ChainBytes.h"
+#include "DefaultStorage.h"
+#include "InventoryBytes.h"
+#include "List32Bytes.h"
 #include "Socket.h"
-#include "Storage.h"
 
 using namespace std;
 
@@ -35,24 +38,18 @@ bool InventoryAction::process(
 		throw runtime_error("Unknown request command");
 	}
 
-	// @todo #18 Необходим объект типа InventoryReply,
-	//  который будет формироваться из request'а и дополняться списком замков.
-	//  Из всего этого добра будет сформирован байтовый массив asBytes()
+	const auto data = DefaultStorage(
+		storage,
+		R"({ "locks": [] })"_json
+	).query("/locks");
+	const auto locks = data["locks"];
 
-	const auto locks = storage->query("/locks");
-	vector<uint32_t> rl;
-	for (const auto &l : locks.value("locks", nlohmann::json::array())) {
-		rl.push_back(htobe32(l));
-	}
+	ChainBytes reply(
+		make_shared<InventoryBytes>(be32toh(req->id)),
+		make_shared<List32Bytes>(vector<uint32_t>(locks.begin(), locks.end()))
+	);
 
-	Inventory reply;
-	reply.id = req->id;		// be32
-	reply.lock_count = htobe32(rl.size());
-	vector<uint8_t> rv(sizeof(reply) + sizeof(uint32_t) * rl.size());
-	memcpy(&rv[0], &reply, sizeof(reply));
-	memcpy(&rv[sizeof(reply)], &rl[0], sizeof(uint32_t) * rl.size());
-
-	socket->send(rv);
+	socket->send(reply.raw());
 
 	return true;
 }
