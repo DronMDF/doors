@@ -27,9 +27,7 @@ InventoryBytesTest::InventoryBytesTest()
 {
 }
 
-
 unique_ptr<const oout::Result> InventoryBytesTest::result() const
 {
 	return tests->result();
 }
-

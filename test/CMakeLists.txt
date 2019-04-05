@@ -10,6 +10,7 @@ ADD_EXECUTABLE(
 	DispatchedActionTest.cpp
 	InventoryActionTest.cpp
 	InventoryBytesTest.cpp
+	KeyStatusBytesTest.cpp
 	List32BytesTest.cpp
 	SaboteurStorage.cpp
 	StatusActionTest.cpp

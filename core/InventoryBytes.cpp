@@ -7,7 +7,6 @@
 #include <cstring>
 #include <protocol.h>
 
-
 using namespace std;
 
 InventoryBytes::InventoryBytes(const uint32_t id)

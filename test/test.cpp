@@ -9,6 +9,7 @@
 #include "DispatchedActionTest.h"
 #include "InventoryActionTest.h"
 #include "InventoryBytesTest.h"
+#include "KeyStatusBytesTest.h"
 #include "List32BytesTest.h"
 #include "StatusActionTest.h"
 
@@ -23,6 +24,7 @@ int main(int, char **)
 			make_shared<DispatchedActionTest>(),
 			make_shared<InventoryActionTest>(),
 			make_shared<InventoryBytesTest>(),
+			make_shared<KeyStatusBytesTest>(),
 			make_shared<List32BytesTest>(),
 			make_shared<StatusActionTest>()
 		)
