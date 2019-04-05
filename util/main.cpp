@@ -9,6 +9,7 @@
 #include <asio/ts/buffer.hpp>
 #include <asio/ts/internet.hpp>
 #include <protocol.h>
+#include <core/BytesInventory.h>
 
 using namespace std;
 using asio::ip::udp;
@@ -51,38 +52,12 @@ void inventory_command(args::Subparser *parser)
 	//  3 секунды наверное хватит c головой
 	size_t reply_length = socket.receive_from(asio::buffer(reply_data, 1400), sender_endpoint);
 
-	if (reply_length < sizeof(Inventory)) {
-		cout << "Wrong Init reply" << endl;
-		return;
-	}
-
-	Inventory *reply = reinterpret_cast<Inventory *>(&reply_data[0]);
-	if (ntohl(reply->version) != VERSION) {
-		cout << "Wrong protool version" << endl;
-		return;
-	}
-
-	if (ntohl(reply->command) != INVENTORY) {
-		cout << "Wrong Init reply command" << endl;
-		return;
-	}
-
-	// @todo #49 lock_count не входит в reply, надо парсить последующие байты
-	const auto lock_count = 0;		// ntohl(reply->lock_count);
-	if (reply_length < sizeof(Inventory) + lock_count * sizeof(uint32_t)) {
-		cout << "Wrong Init reply content" << endl;
-		return;
-	}
-
-	vector<uint32_t> locks(
-		reinterpret_cast<uint32_t *>(&reply_data[sizeof(Inventory)]),
-		reinterpret_cast<uint32_t *>(&reply_data[sizeof(Inventory)]) + lock_count
-	);
-
 	cout << "Controller: #" << sender_endpoint.address() << endl;
+
+	BytesInventory inventory(&reply_data[0], reply_length);
 	cout << "Locks:" << endl;
-	for (const auto &l : locks) {
-		cout << "\t" << be32toh(l) << endl;
+	for (const auto &l : inventory.locks()) {
+		cout << "\t" << l << endl;
 	}
 }
 

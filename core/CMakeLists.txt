@@ -16,6 +16,7 @@ ADD_COMPILE_OPTIONS(
 ADD_LIBRARY(
 	core
 	AsioSocket.cpp
+	BytesInventory.cpp
 	ChainBytes.cpp
 	DefaultStorage.cpp
 	DispatchedAction.cpp
