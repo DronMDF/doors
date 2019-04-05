@@ -8,9 +8,11 @@
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include "ChainBytes.h"
 #include "DefaultStorage.h"
+#include "KeyStatusBytes.h"
+#include "List32Bytes.h"
 #include "Socket.h"
-#include "Storage.h"
 
 using namespace std;
 
@@ -38,19 +40,19 @@ void StatusTask::run() const
 
 	vector<uint32_t> locks;
 	for (const auto &l : data["locks"]) {
-		locks.push_back(htobe32(l.get<uint32_t>()));
+		locks.push_back(l.get<uint32_t>());
 	}
 
-	KeyStatus reply;
-	reply.id = request.id;
-	reply.key = request.key;
-	reply.contract = htobe64(data["contract"].get<uint32_t>());
-	reply.expired = htobe32(data["expired"].get<uint32_t>());
-	reply.money = htobe32(data["money"].get<uint32_t>());
-	reply.lock_count = htobe32(locks.size());
-
-	vector<uint8_t> rv(sizeof(reply) + locks.size() * sizeof(uint32_t));
-	memcpy(&rv[0], &reply, sizeof(reply));
-	memcpy(&rv[sizeof(reply)], &locks[0], locks.size() * sizeof(uint32_t));
-	socket->send(rv);
+	ChainBytes rv(
+		make_shared<KeyStatusBytes>(
+			be32toh(request.id),
+			be64toh(request.key),
+			data["contract"].get<uint32_t>(),
+			data["expired"].get<uint32_t>(),
+			data["money"].get<uint32_t>()
+		),
+		// @todo #52 List32Bytes должен принимать на вход json array
+		make_shared<List32Bytes>(locks)
+	);
+	socket->send(rv.raw());
 }

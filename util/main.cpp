@@ -134,7 +134,8 @@ void status_command(args::Subparser *parser)
 		return;
 	}
 
-	const auto lock_count = be32toh(reply->lock_count);
+	// @todo #52 Необходим BytesKeyStatus для разбора входящих запросов
+	const auto lock_count = 0;		// be32toh(reply->lock_count);
 	if (reply_length < sizeof(KeyStatus) + lock_count * sizeof(uint32_t)) {
 		cout << "Wrong Init reply content" << endl;
 		return;

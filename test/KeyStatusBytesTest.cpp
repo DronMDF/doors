@@ -3,23 +3,29 @@
 // This software may be modified and distributed under the terms
 // of the MIT license.  See the LICENSE file for details.
 
-#include "InventoryBytesTest.h"
-#include <core/InventoryBytes.h>
+#include "KeyStatusBytesTest.h"
+#include <core/KeyStatusBytes.h>
 #include "BytesRepr.h"
 
 using namespace std;
 using namespace oout;
 
-InventoryBytesTest::InventoryBytesTest()
+KeyStatusBytesTest::KeyStatusBytesTest()
 	: tests(
 		make_shared<TestSuite>(
 			make_shared<TestNamed>(
-				"InventoryBytes returns valid",
+				"KeyStatusBytes result",
 				make_shared<TestEqual>(
 					make_shared<BytesRepr>(
-						make_shared<InventoryBytes>(10)
+						make_shared<KeyStatusBytes>(
+							0x88, 0x5ec, 0x111, 0x12345678, 0x777
+						)
 					),
-					"00000001 00000004 0000000a "
+					"00000001 00000007 00000088 "
+					"00000000 000005ec "
+					"00000000 00000111 "
+					"12345678 "
+					"00000777 "
 				)
 			)
 		)
@@ -27,7 +33,7 @@ InventoryBytesTest::InventoryBytesTest()
 {
 }
 
-unique_ptr<const oout::Result> InventoryBytesTest::result() const
+unique_ptr<const oout::Result> KeyStatusBytesTest::result() const
 {
 	return tests->result();
 }
