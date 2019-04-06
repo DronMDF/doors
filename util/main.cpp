@@ -10,6 +10,10 @@
 #include <asio/ts/internet.hpp>
 #include <protocol.h>
 #include <core/BytesInventory.h>
+#include <core/BytesOk.h>
+#include <core/ChainBytes.h>
+#include <core/ConfigBytes.h>
+#include <core/List64Bytes.h>
 
 using namespace std;
 using asio::ip::udp;
@@ -59,6 +63,48 @@ void inventory_command(args::Subparser *parser)
 	for (const auto &l : inventory.locks()) {
 		cout << "\t" << l << endl;
 	}
+}
+
+void config_command(args::Subparser *parser)
+{
+	args::Positional<string> ip(*parser, "ip", "Controller ip", args::Options::Required);
+	args::Positional<int> lock(*parser, "lock", "Lock", args::Options::Required);
+	args::Positional<string> token(*parser, "token", "Token", args::Options::Required);
+	parser->Parse();
+
+	uint64_t key = 0;
+	istringstream in(args::get(token));
+	in >> hex >> key;
+
+	cout << "config " << args::get(ip) << ":" << args::get(port)
+		<< ", lock " << args::get(lock)
+		<< ", token "  << hex << setw(16) << setfill('0') << key << endl;
+
+	asio::io_context context;
+
+	udp::socket socket(context, udp::endpoint(udp::v4(), 0));
+
+	udp::resolver resolver(context);
+	const auto endpoint = *resolver.resolve(
+		udp::v4(),
+		args::get(ip),
+		to_string(args::get(port))
+	).begin();
+
+	ChainBytes request(
+		make_shared<ConfigBytes>(0, args::get(lock), 100, 5),
+		make_shared<List64Bytes>(vector<uint64_t>(1, key))
+	);
+	const auto reqbytes = request.raw();
+	socket.send_to(asio::buffer(&reqbytes[0], reqbytes.size()), endpoint);
+
+	uint8_t reply_data[1400];
+	udp::endpoint sender_endpoint;
+	size_t reply_length = socket.receive_from(asio::buffer(reply_data, 1400), sender_endpoint);
+
+	BytesOk reply(&reply_data[0], reply_length);
+
+	cout << "ok" << endl;
 }
 
 void status_command(args::Subparser *parser)
@@ -143,6 +189,12 @@ int main(int argc, char **argv)
 		"inventory",
 		"Controler inventory",
 		[](args::Subparser &parser){ inventory_command(&parser); }
+	);
+	args::Command config(
+		commands,
+		"config",
+		"Lock config",
+		[](args::Subparser &parser){ config_command(&parser); }
 	);
 	args::Command status(
 		commands,

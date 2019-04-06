@@ -17,6 +17,8 @@ ADD_LIBRARY(
 	core
 	AsioSocket.cpp
 	BytesInventory.cpp
+	BytesOk.cpp
+	ConfigBytes.cpp
 	ChainBytes.cpp
 	DefaultStorage.cpp
 	DispatchedAction.cpp
@@ -25,6 +27,7 @@ ADD_LIBRARY(
 	InventoryBytes.cpp
 	KeyStatusBytes.cpp
 	List32Bytes.cpp
+	List64Bytes.cpp
 	Listener.cpp
 	NullStorage.cpp
 	StatusAction.cpp
