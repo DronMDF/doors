@@ -5,12 +5,14 @@
 
 #include <iostream>
 #include <2out/2out.h>
+#include "ConfigBytesTest.h"
 #include "ChainBytesTest.h"
 #include "DispatchedActionTest.h"
 #include "InventoryActionTest.h"
 #include "InventoryBytesTest.h"
 #include "KeyStatusBytesTest.h"
 #include "List32BytesTest.h"
+#include "List64BytesTest.h"
 #include "StatusActionTest.h"
 
 using namespace std;
@@ -20,12 +22,14 @@ int main(int, char **)
 {
 	const shared_ptr<const Result> result = TestTimed(
 		make_shared<oout::TestSuite>(
+			make_shared<ConfigBytesTest>(),
 			make_shared<ChainBytesTest>(),
 			make_shared<DispatchedActionTest>(),
 			make_shared<InventoryActionTest>(),
 			make_shared<InventoryBytesTest>(),
 			make_shared<KeyStatusBytesTest>(),
 			make_shared<List32BytesTest>(),
+			make_shared<List64BytesTest>(),
 			make_shared<StatusActionTest>()
 		)
 	).result();

@@ -46,13 +46,13 @@ struct Ok {
 	uint32_t id = 0;
 	// Дополнительное поле, содержимое зависит от запроса
 	uint32_t opt = 0;
-};
+} __attribute__((packed));
 
 struct Error {
 	uint32_t version = htonl(VERSION);
 	uint32_t command = htonl(ERROR);
 	uint32_t id = 0;
-};
+} __attribute__((packed));
 
 struct InventoryReq {
 	uint32_t version = htonl(VERSION);
@@ -66,7 +66,7 @@ struct Inventory {
 	uint32_t id = 0;
 } __attribute__((packed));
 	// uint32_t lock_count = 0;	// Количество замков
-	// uint32_t locks[];		// Список замков после структуры
+	// uint32_t locks[];		// Список замков
 
 struct Config {
 	uint32_t version = htonl(VERSION);
@@ -75,9 +75,9 @@ struct Config {
 	uint32_t lock_no;		// Номер замка
 	uint32_t timeout;		// Время ожидания ответа от сервера
 	uint32_t ntry;			// Количество попыток обращения к серверу
-	uint32_t keys_count;		// Количество мастерключей
 } __attribute__((packed));
-// uint64_t keys[];		// Список мастерключей после структуры
+	// uint32_t keys_count;		// Количество мастерключей
+	// uint64_t keys[];		// Список мастерключей
 
 struct KeyStatusRequest {
 	uint32_t version = htonl(VERSION);
@@ -96,7 +96,7 @@ struct KeyStatus {
 	int32_t money = 0;			// Баланс в копейках (возможны отрицательные значения)
 } __attribute__((packed));
 	// uint32_t lock_count = 0;		// Количество закрытых ящиков.
-	// uint32_t locks[];		// Список закрытых ящиков после структуры
+	// uint32_t locks[];			// Список закрытых ящиков
 	// Но если мы хотим донести это до пользователя -
 	// нужно номер замка странслировать в номер ящика
 

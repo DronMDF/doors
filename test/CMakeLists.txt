@@ -6,12 +6,14 @@ ADD_EXECUTABLE(
 	test.cpp
 	ActionRepr.cpp
 	BytesRepr.cpp
+	ConfigBytesTest.cpp
 	ChainBytesTest.cpp
 	DispatchedActionTest.cpp
 	InventoryActionTest.cpp
 	InventoryBytesTest.cpp
 	KeyStatusBytesTest.cpp
 	List32BytesTest.cpp
+	List64BytesTest.cpp
 	SaboteurStorage.cpp
 	StatusActionTest.cpp
 	TestAction.cpp

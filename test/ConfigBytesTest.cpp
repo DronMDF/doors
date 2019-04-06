@@ -3,25 +3,23 @@
 // This software may be modified and distributed under the terms
 // of the MIT license.  See the LICENSE file for details.
 
-#include "List32BytesTest.h"
-#include <core/List32Bytes.h>
+#include "ConfigBytesTest.h"
+#include <core/ConfigBytes.h>
 #include "BytesRepr.h"
 
 using namespace std;
 using namespace oout;
 
-List32BytesTest::List32BytesTest()
+ConfigBytesTest::ConfigBytesTest()
 	: tests(
 		make_shared<TestSuite>(
 			make_shared<TestNamed>(
-				"List32Bytes keep data in be",
+				"ConfigBytes returns valid",
 				make_shared<TestEqual>(
 					make_shared<BytesRepr>(
-						make_shared<List32Bytes>(
-							vector<uint32_t>{7, 8, 9}
-						)
+						make_shared<ConfigBytes>(7, 0x33, 0x666, 3)
 					),
-					"00000003 00000007 00000008 00000009 "
+					"00000001 00000005 00000007 00000033 00000666 00000003 "
 				)
 			)
 		)
@@ -29,7 +27,8 @@ List32BytesTest::List32BytesTest()
 {
 }
 
-unique_ptr<const oout::Result> List32BytesTest::result() const
+unique_ptr<const oout::Result> ConfigBytesTest::result() const
 {
 	return tests->result();
 }
+

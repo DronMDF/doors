@@ -3,25 +3,25 @@
 // This software may be modified and distributed under the terms
 // of the MIT license.  See the LICENSE file for details.
 
-#include "List32BytesTest.h"
-#include <core/List32Bytes.h>
+#include "List64BytesTest.h"
+#include <core/List64Bytes.h>
 #include "BytesRepr.h"
 
 using namespace std;
 using namespace oout;
 
-List32BytesTest::List32BytesTest()
+List64BytesTest::List64BytesTest()
 	: tests(
 		make_shared<TestSuite>(
 			make_shared<TestNamed>(
-				"List32Bytes keep data in be",
+				"List64Bytes keep data in be",
 				make_shared<TestEqual>(
 					make_shared<BytesRepr>(
-						make_shared<List32Bytes>(
-							vector<uint32_t>{7, 8, 9}
+						make_shared<List64Bytes>(
+							vector<uint64_t>{7, 8}
 						)
 					),
-					"00000003 00000007 00000008 00000009 "
+					"00000002 00000000 00000007 00000000 00000008 "
 				)
 			)
 		)
@@ -29,7 +29,7 @@ List32BytesTest::List32BytesTest()
 {
 }
 
-unique_ptr<const oout::Result> List32BytesTest::result() const
+unique_ptr<const oout::Result> List64BytesTest::result() const
 {
 	return tests->result();
 }
