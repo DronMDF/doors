@@ -22,6 +22,7 @@ ADD_LIBRARY(
 	ChainBytes.cpp
 	DefaultStorage.cpp
 	DispatchedAction.cpp
+	IdentBytes.cpp
 	ImmediatlyScheduler.cpp
 	InventoryAction.cpp
 	InventoryBytes.cpp

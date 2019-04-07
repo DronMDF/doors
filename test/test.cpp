@@ -8,6 +8,7 @@
 #include "ConfigBytesTest.h"
 #include "ChainBytesTest.h"
 #include "DispatchedActionTest.h"
+#include "IdentBytesTest.h"
 #include "InventoryActionTest.h"
 #include "InventoryBytesTest.h"
 #include "KeyStatusBytesTest.h"
@@ -25,6 +26,7 @@ int main(int, char **)
 			make_shared<ConfigBytesTest>(),
 			make_shared<ChainBytesTest>(),
 			make_shared<DispatchedActionTest>(),
+			make_shared<IdentBytesTest>(),
 			make_shared<InventoryActionTest>(),
 			make_shared<InventoryBytesTest>(),
 			make_shared<KeyStatusBytesTest>(),
