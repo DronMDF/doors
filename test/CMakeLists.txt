@@ -9,6 +9,7 @@ ADD_EXECUTABLE(
 	ConfigBytesTest.cpp
 	ChainBytesTest.cpp
 	DispatchedActionTest.cpp
+	IdentBytesTest.cpp
 	InventoryActionTest.cpp
 	InventoryBytesTest.cpp
 	KeyStatusBytesTest.cpp

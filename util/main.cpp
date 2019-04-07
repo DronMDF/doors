@@ -13,6 +13,7 @@
 #include <core/BytesOk.h>
 #include <core/ChainBytes.h>
 #include <core/ConfigBytes.h>
+#include <core/IdentBytes.h>
 #include <core/List64Bytes.h>
 
 using namespace std;
@@ -178,6 +179,39 @@ void status_command(args::Subparser *parser)
 	}
 }
 
+void ident_command(args::Subparser *parser)
+{
+	args::Positional<string> ip(*parser, "ip", "Controller ip", args::Options::Required);
+	args::Positional<int> lock(*parser, "lock", "Lock", args::Options::Required);
+	parser->Parse();
+
+	cout << "ident " << args::get(ip) << ":" << args::get(port)
+		<< ", lock " << args::get(lock) << endl;
+
+	asio::io_context context;
+
+	udp::socket socket(context, udp::endpoint(udp::v4(), 0));
+
+	udp::resolver resolver(context);
+	const auto endpoint = *resolver.resolve(
+		udp::v4(),
+		args::get(ip),
+		to_string(args::get(port))
+	).begin();
+
+	IdentBytes request(0, args::get(lock));
+	const auto reqbytes = request.raw();
+	socket.send_to(asio::buffer(&reqbytes[0], reqbytes.size()), endpoint);
+
+	uint8_t reply_data[1400];
+	udp::endpoint sender_endpoint;
+	size_t reply_length = socket.receive_from(asio::buffer(reply_data, 1400), sender_endpoint);
+
+	BytesOk reply(&reply_data[0], reply_length);
+
+	cout << "ok" << endl;
+}
+
 int main(int argc, char **argv)
 {
 	args::ArgumentParser parser("Doors utility.", "Footer.");
@@ -201,6 +235,12 @@ int main(int argc, char **argv)
 		"status",
 		"Status",
 		[](args::Subparser &parser){ status_command(&parser); }
+	);
+	args::Command ident(
+		commands,
+		"ident",
+		"Lock identification",
+		[](args::Subparser &parser){ ident_command(&parser); }
 	);
 
 	try {
