@@ -7,6 +7,7 @@
 #include <args.hxx>
 #include <asio/ts/internet.hpp>
 #include <protocol.h>
+#include <core/BootstrapTask.h>
 #include <core/DispatchedAction.h>
 #include <core/ImmediatlyScheduler.h>
 #include <core/NullStorage.h>
@@ -26,17 +27,23 @@ int main(int argc, char **argv)
 		parser.ParseCLI(argc, argv);
 
 		asio::io_context io_context;
+
+		const auto scheduler = make_shared<ImmediatlyScheduler>();
+		// @todo #64 Добавить HTTP хранилище
+		const auto storage = make_shared<NullStorage>();
+
+		// Получаем стартовую информацию (из БД)
+		scheduler->schedule(make_shared<BootstrapTask>(storage, scheduler));
+
 		make_shared<Listener>(
 			&io_context,
 			args::get(port),
 			make_shared<DispatchedAction>(
 				KEY_STATUS_REQ,
-				make_shared<StatusAction>(
-					make_shared<NullStorage>(),
-					make_shared<ImmediatlyScheduler>()
-				)
+				make_shared<StatusAction>(storage, scheduler)
 			)
 		)->start();
+
 		io_context.run();
 	} catch (const args::Help &) {
 		cout << parser;
