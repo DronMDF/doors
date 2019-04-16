@@ -27,6 +27,7 @@ ADD_LIBRARY(
 	ImmediatlyScheduler.cpp
 	InventoryAction.cpp
 	InventoryBytes.cpp
+	InventoryTask.cpp
 	KeyStatusBytes.cpp
 	List32Bytes.cpp
 	List64Bytes.cpp
