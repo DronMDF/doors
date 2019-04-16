@@ -25,7 +25,7 @@ ADD_EXECUTABLE(
 TARGET_LINK_LIBRARIES(
 	server-test
 	core
-	2out
+	${CONAN_LIBS}
 )
 
 ADD_CUSTOM_COMMAND(

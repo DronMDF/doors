@@ -5,6 +5,8 @@
 
 #include "BootstrapTask.h"
 #include "DefaultStorage.h"
+#include "InventoryTask.h"
+#include "Scheduler.h"
 
 using namespace std;
 
@@ -21,8 +23,16 @@ void BootstrapTask::run() const
 		storage,
 		R"({ "controllers": [] })"_json
 	).query("/controllers");
-	for (const auto &c [[gnu::unused]] : controllers["controllers"]) {
-		// @todo #64 Создать задачу на инвентаризацию контроллера
-		//  В структуре содержится адрес и порт
+	for (const auto &c : controllers["controllers"]) {
+		scheduler->schedule(
+			make_shared<InventoryTask>(
+				c["address"].get<string>(),
+				c["port"].get<in_port_t>(),
+				storage
+			)
+		);
 	}
+
+	// @todo #67 Нужно поставить отложенную задачу
+	//  чтобы провести повторную инвентаризацию через час?
 }
