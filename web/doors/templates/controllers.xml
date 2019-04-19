@@ -1,0 +1,9 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<controllers>
+	{% for controller in controllers %}
+		<controller id={{controller.id}}>
+			<address>{{controller.address}}</address>
+			<port>{{controller.port}}</port>
+		</controller>
+	{% endfor %}
+</controllers>

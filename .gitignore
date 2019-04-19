@@ -31,5 +31,6 @@
 *.out
 *.app
 
-# Other
+# Django
 *.sqlite3
+__pycache__
