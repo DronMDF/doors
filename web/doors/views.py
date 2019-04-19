@@ -7,6 +7,6 @@ from django.shortcuts import render
 from django.views import generic
 from .models import Controller
 
-class ControllerView(generic.ListView):
+class ControllersView(generic.ListView):
 	model = Controller
-	template = 'doors/controller.xml'
+	template_name = 'controllers.xml'

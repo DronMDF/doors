@@ -2,5 +2,5 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 ADD_TEST(
 	NAME web-test
-	COMMAND ${CMAKE_SOURCE_DIR}/web/manage.py test
+	COMMAND ${CMAKE_SOURCE_DIR}/web/manage.py test --settings=web.test_settings
 )

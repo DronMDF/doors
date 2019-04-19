@@ -31,7 +31,7 @@ TARGET_LINK_LIBRARIES(
 ADD_CUSTOM_COMMAND(
 	TARGET server-test
 	PRE_BUILD
-	COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/test-results/2out
+	COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/test-results
 )
 
 ADD_TEST(
