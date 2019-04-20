@@ -18,7 +18,7 @@ from django.urls import path
 from doors.views import ControllersView
 
 urlpatterns = [
-    path('controller', ControllersView.as_view()),
+    path('controller/', ControllersView.as_view()),
     # @todo #72 Создать точку входа для обновления в контроллере списка замков
     #  PUT /controller/address:port/locks
     #  Эта точка принимает список замков, и обновляет содержимое базы.
