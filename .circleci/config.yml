@@ -27,6 +27,6 @@ jobs:
           make test
           bash <(curl -s https://codecov.io/bash) -R ~/project -F core
           # django keep coverage report in working dir
-          bash <(curl -s https://codecov.io/bash) -R ~/build -F web
+          bash <(curl -s https://codecov.io/bash) -R ~/build -F web -X gcov
       - store_test_results:
           path: ~/build
