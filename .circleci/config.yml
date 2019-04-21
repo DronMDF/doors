@@ -12,7 +12,7 @@ jobs:
           sudo bash cmake-3.13.1-Linux-x86_64.sh --skip-license --prefix=/usr
           # Prerequesties
           sudo apt-get install cppcheck lcov python3-pip
-          sudo pip3 install cpplint conan Django unittest-xml-reporting
+          sudo pip3 install cpplint conan Django unittest-xml-reporting coverage
           gem install pdd
           conan remote add dronmdf https://api.bintray.com/conan/mdf/2out
           conan remote add bincrafter https://api.bintray.com/conan/bincrafters/public-conan
@@ -25,6 +25,8 @@ jobs:
           make style
           make VERBOSE=1
           make test
-          bash <(curl -s https://codecov.io/bash) -R ~/project
+          bash <(curl -s https://codecov.io/bash) -R ~/project -cF core
+          # django keep coverage report in working dir
+          bash <(curl -s https://codecov.io/bash) -R ~/build -F web -X gcov
       - store_test_results:
-          path: ~/build/test-results
+          path: ~/build
