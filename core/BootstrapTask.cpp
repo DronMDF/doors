@@ -12,8 +12,9 @@ using namespace std;
 
 BootstrapTask::BootstrapTask(
 	const shared_ptr<Storage> &storage,
-	const shared_ptr<Scheduler> &scheduler
-) : storage(storage), scheduler(scheduler)
+	const shared_ptr<Scheduler> &scheduler,
+	const shared_ptr<IoService> &service
+) : storage(storage), scheduler(scheduler), service(service)
 {
 }
 
@@ -28,7 +29,8 @@ void BootstrapTask::run() const
 			make_shared<InventoryTask>(
 				c["address"].get<string>(),
 				c["port"].get<in_port_t>(),
-				storage
+				storage,
+				service
 			)
 		);
 	}

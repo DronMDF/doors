@@ -6,44 +6,55 @@
 #include "InventoryTask.h"
 #include <asio/ts/internet.hpp>
 #include <fmt/format.h>
-#include <protocol.h>
 #include "BytesInventory.h"
+#include "IoService.h"
+#include "InventoryReqBytes.h"
 #include "Storage.h"
+#include "UdpHandler.h"
 
 using namespace std;
 using asio::ip::udp;
 
+class InventoryReplyHandler final : public UdpHandler
+{
+public:
+	InventoryReplyHandler(
+		const string &address,
+		in_port_t port,
+		const shared_ptr<Storage> &storage
+	) : address(address), port(port), storage(storage)
+	{
+	}
+
+	void handle(const shared_ptr<const Bytes> &reply) const override
+	{
+		BytesInventory inventory(reply);
+		storage->update(
+			fmt::format("/controller/{1}:{2}/locks", address, port),
+			nlohmann::json::object({{"locks", inventory.locks()}})
+		);
+	}
+private:
+	const string address;
+	in_port_t port;
+	const shared_ptr<Storage> storage;
+};
+
 InventoryTask::InventoryTask(
 	const string &address,
 	in_port_t port,
-	const shared_ptr<Storage> &storage
-) : address(address), port(port), storage(storage)
+	const shared_ptr<Storage> &storage,
+	const shared_ptr<IoService> &service
+) : address(address), port(port), storage(storage), service(service)
 {
 }
 
 void InventoryTask::run() const
 {
-	// @todo #67 Необходимо производить эту операцию асинхронно
-	//  Но проблема в том, что она порождается из booststrap,
-	//  который ничего не знает про ioservice... хм
-	asio::io_context context;
-
-	udp::socket socket(context, udp::endpoint(udp::v4(), 0));
-
-	udp::resolver resolver(context);
-	const auto endpoint = *resolver.resolve(udp::v4(), address, to_string(port)).begin();
-
-	InventoryReq request;
-	socket.send_to(asio::buffer(&request, sizeof(request)), endpoint);
-
-	uint8_t reply_data[1400];
-	udp::endpoint sender_endpoint;
-	size_t reply_length = socket.receive_from(asio::buffer(reply_data, 1400), sender_endpoint);
-
-	BytesInventory inventory(&reply_data[0], reply_length);
-
-	storage->update(
-		fmt::format("/controller/{1}:{2}/locks", address, port),
-		nlohmann::json::object({{"locks", inventory.locks()}})
+	service->async_udp_request(
+		address,
+		port,
+		make_shared<InventoryReqBytes>(),
+		make_shared<InventoryReplyHandler>(address, port, storage)
 	);
 }

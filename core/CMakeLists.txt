@@ -27,12 +27,15 @@ ADD_LIBRARY(
 	ImmediatlyScheduler.cpp
 	InventoryAction.cpp
 	InventoryBytes.cpp
+	InventoryReqBytes.cpp
 	InventoryTask.cpp
 	KeyStatusBytes.cpp
 	List32Bytes.cpp
 	List64Bytes.cpp
 	Listener.cpp
 	NullStorage.cpp
+	NetIoService.cpp
+	RawBytes.cpp
 	StatusAction.cpp
 	StatusTask.cpp
 )
