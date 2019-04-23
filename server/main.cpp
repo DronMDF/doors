@@ -10,6 +10,7 @@
 #include <core/BootstrapTask.h>
 #include <core/DispatchedAction.h>
 #include <core/ImmediatlyScheduler.h>
+#include <core/NetIoService.h>
 #include <core/NullStorage.h>
 #include <core/StatusAction.h>
 #include <core/Listener.h>
@@ -31,9 +32,10 @@ int main(int argc, char **argv)
 		const auto scheduler = make_shared<ImmediatlyScheduler>();
 		// @todo #64 Добавить HTTP хранилище
 		const auto storage = make_shared<NullStorage>();
+		const auto service = make_shared<NetIoService>(&io_context);
 
 		// Получаем стартовую информацию (из БД)
-		scheduler->schedule(make_shared<BootstrapTask>(storage, scheduler));
+		scheduler->schedule(make_shared<BootstrapTask>(storage, scheduler, service));
 
 		make_shared<Listener>(
 			&io_context,

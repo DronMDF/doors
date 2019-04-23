@@ -6,6 +6,7 @@
 #include "BytesInventory.h"
 #include <stdexcept>
 #include <protocol.h>
+#include "Bytes.h"
 
 using namespace std;
 
@@ -30,6 +31,11 @@ BytesInventory::BytesInventory(const vector<uint8_t> &bytes)
 	if (bytes.size() < sizeof(Inventory) + (1 + locks_count) * sizeof(uint32_t)) {
 		throw runtime_error("Wrong Init reply");
 	}
+}
+
+BytesInventory::BytesInventory(const shared_ptr<const Bytes> &bytes)
+	: BytesInventory(bytes->raw())
+{
 }
 
 BytesInventory::BytesInventory(const void *ptr, size_t size)
