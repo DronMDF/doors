@@ -12,6 +12,14 @@ nlohmann::json SaboteurStorage::query(const string &query) const
 	throw runtime_error("Not found");
 }
 
+void SaboteurStorage::async_query(
+	const string &query,
+	const shared_ptr<const StorageHandler> &handler
+) const
+{
+	throw runtime_error("Not found");
+}
+
 void SaboteurStorage::update(const string &query, const nlohmann::json &data)
 {
 	throw runtime_error("Not access");

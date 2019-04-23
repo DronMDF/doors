@@ -10,6 +10,36 @@
 
 using namespace std;
 
+class BootstrapStorageHandler final : public StorageHandler {
+public:
+	BootstrapStorageHandler(
+		const shared_ptr<IoService> &service,
+		const shared_ptr<Scheduler> &scheduler,
+		const shared_ptr<Storage> &storage
+	) : service(service), scheduler(scheduler), storage(storage)
+	{
+	}
+
+	void handle(const nlohmann::json &data) const override
+	{
+		for (const auto &c : data["controllers"]) {
+			scheduler->schedule(
+				make_shared<InventoryTask>(
+					c["address"].get<string>(),
+					c["port"].get<in_port_t>(),
+					storage,
+					service
+				)
+			);
+		}
+	}
+
+private:
+	const shared_ptr<IoService> service;
+	const shared_ptr<Scheduler> scheduler;
+	const shared_ptr<Storage> storage;
+};
+
 BootstrapTask::BootstrapTask(
 	const shared_ptr<Storage> &storage,
 	const shared_ptr<Scheduler> &scheduler,
@@ -20,20 +50,13 @@ BootstrapTask::BootstrapTask(
 
 void BootstrapTask::run() const
 {
-	const auto controllers = DefaultStorage(
+	DefaultStorage(
 		storage,
 		R"({ "controllers": [] })"_json
-	).query("/controllers");
-	for (const auto &c : controllers["controllers"]) {
-		scheduler->schedule(
-			make_shared<InventoryTask>(
-				c["address"].get<string>(),
-				c["port"].get<in_port_t>(),
-				storage,
-				service
-			)
-		);
-	}
+	).async_query(
+		"/controller",
+		make_shared<BootstrapStorageHandler>(service, scheduler, storage)
+	);
 
 	// @todo #67 Нужно поставить отложенную задачу
 	//  чтобы провести повторную инвентаризацию через час?

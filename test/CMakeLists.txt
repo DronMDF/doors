@@ -6,6 +6,7 @@ ADD_EXECUTABLE(
 	test.cpp
 	ActionRepr.cpp
 	BytesRepr.cpp
+	BootstrapTaskTest.cpp
 	ConfigBytesTest.cpp
 	ChainBytesTest.cpp
 	DispatchedActionTest.cpp
@@ -15,6 +16,7 @@ ADD_EXECUTABLE(
 	KeyStatusBytesTest.cpp
 	List32BytesTest.cpp
 	List64BytesTest.cpp
+	LogIoService.cpp
 	SaboteurStorage.cpp
 	StatusActionTest.cpp
 	TestAction.cpp

@@ -6,11 +6,21 @@
 #pragma once
 #include <nlohmann/json.hpp>
 
+class StorageHandler {
+public:
+	virtual ~StorageHandler() = default;
+	virtual void handle(const nlohmann::json &data) const = 0;
+};
+
 class Storage {
 public:
 	virtual ~Storage() = default;
 
-	// @todo #64 Асинхронные запросы должны иметь другой API, с коллбеками
 	virtual nlohmann::json query(const std::string &query) const = 0;
+	virtual void async_query(
+		const std::string &query,
+		const std::shared_ptr<const StorageHandler> &handler
+	) const = 0;
+
 	virtual void update(const std::string &query, const nlohmann::json &data) = 0;
 };
