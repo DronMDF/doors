@@ -7,6 +7,26 @@
 
 using namespace std;
 
+class DefaultStorageHandler final : public StorageHandler {
+public:
+	DefaultStorageHandler(
+		const shared_ptr<const StorageHandler> &handler,
+		const nlohmann::json &data
+	) : handler(handler), data(data)
+	{
+	}
+
+	void handle(const nlohmann::json &result) const override
+	{
+		auto rv = data;
+		rv.merge_patch(result);
+		handler->handle(rv);
+	}
+private:
+	const shared_ptr<const StorageHandler> handler;
+	const nlohmann::json data;
+};
+
 DefaultStorage::DefaultStorage(const shared_ptr<Storage> &storage, const nlohmann::json &data)
 	: storage(storage), data(data)
 {
@@ -24,6 +44,17 @@ nlohmann::json DefaultStorage::query(const string &query) const
 		//  Здесь какраз подходящее место, чтобы записать строчку в лог
 		return data;
 	}
+}
+
+void DefaultStorage::async_query(
+	const string &query,
+	const shared_ptr<const StorageHandler> &handler
+) const
+{
+	storage->async_query(
+		query,
+		make_shared<DefaultStorageHandler>(handler, data)
+	);
 }
 
 void DefaultStorage::update(

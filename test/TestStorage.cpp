@@ -22,6 +22,14 @@ nlohmann::json TestStorage::query(const string &query) const
 	return info.at(query);
 }
 
+void TestStorage::async_query(
+	const string &query,
+	const shared_ptr<const StorageHandler> &handler
+) const
+{
+	handler->handle(info.at(query));
+}
+
 void TestStorage::update(
 	const string &query [[gnu::unused]],
 	const nlohmann::json &data [[gnu::unused]]

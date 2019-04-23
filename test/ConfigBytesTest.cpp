@@ -31,4 +31,3 @@ unique_ptr<const oout::Result> ConfigBytesTest::result() const
 {
 	return tests->result();
 }
-

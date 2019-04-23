@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <2out/2out.h>
+#include "BootstrapTaskTest.h"
 #include "ConfigBytesTest.h"
 #include "ChainBytesTest.h"
 #include "DispatchedActionTest.h"
@@ -23,6 +24,7 @@ int main(int, char **)
 {
 	const shared_ptr<const Result> result = TestTimed(
 		make_shared<oout::TestSuite>(
+			make_shared<BootstrapTaskTest>(),
 			make_shared<ConfigBytesTest>(),
 			make_shared<ChainBytesTest>(),
 			make_shared<DispatchedActionTest>(),
