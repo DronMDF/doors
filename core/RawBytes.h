@@ -4,6 +4,7 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
+#include <cstddef>
 #include "Bytes.h"
 
 class RawBytes final : public Bytes {
