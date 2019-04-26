@@ -54,7 +54,7 @@ void BootstrapTask::run() const
 		storage,
 		R"({ "controllers": [] })"_json
 	).async_query(
-		"/controller",
+		"/controller/",
 		make_shared<BootstrapStorageHandler>(service, scheduler, storage)
 	);
 

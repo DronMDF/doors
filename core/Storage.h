@@ -16,6 +16,7 @@ class Storage {
 public:
 	virtual ~Storage() = default;
 
+	// @todo #66 Нужно убить синхронное API в Storage
 	virtual nlohmann::json query(const std::string &query) const = 0;
 	virtual void async_query(
 		const std::string &query,

@@ -38,7 +38,7 @@ BootstrapTaskTest::BootstrapTaskTest()
 				make_shared<TestStartsWith>(
 					make_shared<BootstrapUdpRepr>(
 						make_shared<TestStorage>(
-							"/controller",
+							"/controller/",
 							R"({
 								"controllers": [{
 									"address": "127.0.0.1",

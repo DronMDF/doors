@@ -9,11 +9,11 @@
 #include <protocol.h>
 #include <core/BootstrapTask.h>
 #include <core/DispatchedAction.h>
+#include <core/HttpStorage.h>
 #include <core/ImmediatlyScheduler.h>
-#include <core/NetIoService.h>
-#include <core/NullStorage.h>
-#include <core/StatusAction.h>
 #include <core/Listener.h>
+#include <core/NetIoService.h>
+#include <core/StatusAction.h>
 
 using namespace std;
 using asio::ip::udp;
@@ -23,6 +23,7 @@ int main(int argc, char **argv)
 	args::ArgumentParser parser("Doors server", "Done");
 	args::HelpFlag help(parser, "help", "Display this help menu", {'h', "help"});
 	args::ValueFlag<in_port_t> port(parser, "port", "communication port", {'p'}, 5000);
+	args::ValueFlag<string> uri(parser, "uri", "Config uri", {'u'}, "http://127.0.0.1:8000");
 
 	try {
 		parser.ParseCLI(argc, argv);
@@ -31,8 +32,7 @@ int main(int argc, char **argv)
 
 		const auto service = make_shared<NetIoService>(&io_context);
 		const auto scheduler = make_shared<ImmediatlyScheduler>();
-		// @todo #64 Добавить HTTP хранилище
-		const auto storage = make_shared<NullStorage>();
+		const auto storage = make_shared<HttpStorage>(args::get(uri), service);
 
 		// Получаем стартовую информацию (из БД)
 		scheduler->schedule(make_shared<BootstrapTask>(storage, scheduler, service));

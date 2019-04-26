@@ -10,6 +10,7 @@
 class NetIoService final : public IoService {
 public:
 	explicit NetIoService(asio::io_context *context);
+
 	void async_udp_request(
 		const std::string &address,
 		in_port_t port,
@@ -17,6 +18,11 @@ public:
 		const std::shared_ptr<const UdpHandler> &handler
 	) const override;
 
+	void async_http_request(
+		const std::string &uri,
+		const std::string &request,
+		const std::shared_ptr<const StorageHandler> &handler
+	) const override;
 private:
 	asio::io_context *context;
 };
