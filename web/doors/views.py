@@ -9,4 +9,5 @@ from .models import Controller
 
 class ControllersView(generic.ListView):
 	model = Controller
-	template_name = 'controllers.xml'
+	content_type = 'text/json'
+	template_name = 'controllers.json'
