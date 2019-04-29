@@ -30,7 +30,7 @@ public:
 	{
 		BytesInventory inventory(reply);
 		storage->update(
-			fmt::format("/controller/{1}:{2}/locks", address, port),
+			fmt::format("/controller/{0}:{1}/locks", address, port),
 			nlohmann::json::object({{"locks", inventory.locks()}})
 		);
 	}

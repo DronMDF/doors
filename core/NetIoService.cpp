@@ -149,14 +149,14 @@ public:
 		reply.consume(bytes);
 
 		smatch m;
-		if (!regex_match(hdr, m, regex(R"(Content-Length: (\d+))"))) {
+		if (!regex_search(hdr, m, regex(R"(Content-Length: (\d+))"))) {
 			throw runtime_error("Wrong response header in HttpAsyncRequestStorage");
 		}
 
 		asio::async_read(
 			socket,
 			reply,
-			asio::transfer_at_least(stoi(m[0])),
+			asio::transfer_at_least(stoi(m[1])),
 			bind(
 				&HttpAsyncRequest::handle_body,
 				shared_from_this(),

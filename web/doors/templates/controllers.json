@@ -1,0 +1,14 @@
+{
+	"controllers": [
+		{% for controller in object_list %}
+		{
+			"id": {{controller.id}},
+			"address": "{{controller.address}}",
+			"port": {{controller.port}}
+		}
+		{% if not forloop.last %}
+		,
+		{% endif %}
+		{% endfor %}
+	]
+}
