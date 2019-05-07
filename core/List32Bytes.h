@@ -9,6 +9,8 @@
 class List32Bytes final : public Bytes {
 public:
 	explicit List32Bytes(const std::vector<uint32_t> &values);
+	List32Bytes();
+
 	std::vector<uint8_t> raw() const override;
 private:
 	const std::vector<uint32_t> values;

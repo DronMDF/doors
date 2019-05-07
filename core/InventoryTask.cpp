@@ -18,11 +18,8 @@ using asio::ip::udp;
 class InventoryReplyHandler final : public UdpHandler
 {
 public:
-	InventoryReplyHandler(
-		const string &address,
-		in_port_t port,
-		const shared_ptr<Storage> &storage
-	) : address(address), port(port), storage(storage)
+	InventoryReplyHandler( uint32_t controller_id, const shared_ptr<Storage> &storage)
+		: controller_id(controller_id), storage(storage)
 	{
 	}
 
@@ -30,22 +27,22 @@ public:
 	{
 		BytesInventory inventory(reply);
 		storage->update(
-			fmt::format("/controller/{0}:{1}/locks", address, port),
+			fmt::format("/controller/{0}/locks", controller_id),
 			nlohmann::json::object({{"locks", inventory.locks()}})
 		);
 	}
 private:
-	const string address;
-	in_port_t port;
+	const uint32_t controller_id;
 	const shared_ptr<Storage> storage;
 };
 
 InventoryTask::InventoryTask(
+	uint32_t controller_id,
 	const string &address,
 	in_port_t port,
 	const shared_ptr<Storage> &storage,
 	const shared_ptr<IoService> &service
-) : address(address), port(port), storage(storage), service(service)
+) : controller_id(controller_id), address(address), port(port), storage(storage), service(service)
 {
 }
 
@@ -55,6 +52,6 @@ void InventoryTask::run() const
 		address,
 		port,
 		make_shared<InventoryReqBytes>(),
-		make_shared<InventoryReplyHandler>(address, port, storage)
+		make_shared<InventoryReplyHandler>(controller_id, storage)
 	);
 }

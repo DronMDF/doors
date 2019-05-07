@@ -13,12 +13,12 @@ BytesOk::BytesOk(const vector<uint8_t> &bytes)
 	: bytes(bytes)
 {
 	if (bytes.size() < sizeof(Ok)) {
-		throw runtime_error("Wrong Init reply");
+		throw runtime_error("Wrong OK size");
 	}
 
 	const Ok *reply = reinterpret_cast<const Ok *>(&bytes[0]);
 	if (be32toh(reply->version) != VERSION) {
-		throw runtime_error("Wrong protool version");
+		throw runtime_error("Wrong protocol version");
 	}
 
 	if (be32toh(reply->command) != OK) {

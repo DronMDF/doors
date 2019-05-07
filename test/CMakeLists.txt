@@ -13,13 +13,16 @@ ADD_EXECUTABLE(
 	IdentBytesTest.cpp
 	InventoryActionTest.cpp
 	InventoryBytesTest.cpp
+	InventoryTaskTest.cpp
 	KeyStatusBytesTest.cpp
 	List32BytesTest.cpp
 	List64BytesTest.cpp
 	LogIoService.cpp
+	LogStorage.cpp
 	SaboteurStorage.cpp
 	StatusActionTest.cpp
 	TestAction.cpp
+	TestIoService.cpp
 	TestSocket.cpp
 	TestStorage.cpp
 )
