@@ -14,22 +14,22 @@ BytesInventory::BytesInventory(const vector<uint8_t> &bytes)
 	: bytes(bytes)
 {
 	if (bytes.size() < sizeof(Inventory) + sizeof(uint32_t)) {
-		throw runtime_error("Wrong Init reply");
+		throw runtime_error("Wrong INVENTORY header");
 	}
 
 	const Inventory *reply = reinterpret_cast<const Inventory *>(&bytes[0]);
 	if (be32toh(reply->version) != VERSION) {
-		throw runtime_error("Wrong protool version");
+		throw runtime_error("Wrong protocol version");
 	}
 
 	if (be32toh(reply->command) != INVENTORY) {
-		throw runtime_error("Wrong Init reply command");
+		throw runtime_error("Wrong INVENTORY command");
 	}
 	const size_t locks_count = be32toh(
 		*reinterpret_cast<const uint32_t *>(&bytes[sizeof(Inventory)])
 	);
 	if (bytes.size() < sizeof(Inventory) + (1 + locks_count) * sizeof(uint32_t)) {
-		throw runtime_error("Wrong Init reply");
+		throw runtime_error("Wrong INVENTORY size");
 	}
 }
 

@@ -12,6 +12,7 @@
 #include "IdentBytesTest.h"
 #include "InventoryActionTest.h"
 #include "InventoryBytesTest.h"
+#include "InventoryTaskTest.h"
 #include "KeyStatusBytesTest.h"
 #include "List32BytesTest.h"
 #include "List64BytesTest.h"
@@ -31,6 +32,7 @@ int main(int, char **)
 			make_shared<IdentBytesTest>(),
 			make_shared<InventoryActionTest>(),
 			make_shared<InventoryBytesTest>(),
+			make_shared<InventoryTaskTest>(),
 			make_shared<KeyStatusBytesTest>(),
 			make_shared<List32BytesTest>(),
 			make_shared<List64BytesTest>(),

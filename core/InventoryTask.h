@@ -13,6 +13,7 @@ class Storage;
 class InventoryTask final : public Task {
 public:
 	InventoryTask(
+		uint32_t controller_id,
 		const std::string &address,
 		in_port_t port,
 		const std::shared_ptr<Storage> &storage,
@@ -21,6 +22,7 @@ public:
 
 	void run() const override;
 private:
+	const uint32_t controller_id;
 	const std::string address;
 	const in_port_t port;
 	const std::shared_ptr<Storage> storage;

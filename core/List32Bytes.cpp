@@ -14,6 +14,11 @@ List32Bytes::List32Bytes(const vector<uint32_t> &values)
 {
 }
 
+List32Bytes::List32Bytes()
+	: List32Bytes(vector<uint32_t>{})
+{
+}
+
 vector<uint8_t> List32Bytes::raw() const
 {
 	vector<uint32_t> be;

@@ -25,6 +25,7 @@ public:
 		for (const auto &c : data["controllers"]) {
 			scheduler->schedule(
 				make_shared<InventoryTask>(
+					c["id"].get<uint32_t>(),
 					c["address"].get<string>(),
 					c["port"].get<in_port_t>(),
 					storage,
