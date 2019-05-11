@@ -3,11 +3,25 @@
 # This software may be modified and distributed under the terms
 # of the MIT license.  See the LICENSE file for details.
 
-from django.shortcuts import render
-from django.views import generic
-from .models import Controller
+from django.http import JsonResponse
+from django.views import generic, View
+from django.views.generic.detail import SingleObjectMixin
+import json
+from .models import Controller, Lock
+
 
 class ControllersView(generic.ListView):
 	model = Controller
 	content_type = 'text/json'
 	template_name = 'controllers.json'
+
+
+class ControllersLockView(SingleObjectMixin, View):
+	model = Controller
+	def post(self, request, **kwargs):
+		self.object = self.get_object()
+		locks = json.loads(request.body).get('locks')
+		for l in locks:
+			Lock.objects.create(controller=self.object, hwid=l)
+		return JsonResponse({})
+
