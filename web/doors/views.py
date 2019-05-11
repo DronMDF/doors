@@ -20,7 +20,9 @@ class ControllersLockView(SingleObjectMixin, View):
 	model = Controller
 	def post(self, request, **kwargs):
 		self.object = self.get_object()
-		locks = json.loads(request.body).get('locks')
+		locks = json.loads(request.body.decode('utf8')).get('locks')
+		# @todo #92 Нужно сравнивать списки замков с имеющимися
+		#  И добавлять только если замок новый
 		for l in locks:
 			Lock.objects.create(controller=self.object, hwid=l)
 		return JsonResponse({})
