@@ -15,13 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from doors.views import ControllersView
+from doors.views import ControllersView, ControllersLockView
 
 urlpatterns = [
     path('controller/', ControllersView.as_view()),
-    # @todo #72 Создать точку входа для обновления в контроллере списка замков
-    #  PUT /controller/address:port/locks
-    #  Эта точка принимает список замков, и обновляет содержимое базы.
-    #  Возможно стоит сделать замки не стираемыми, а отключаемыми. Замок типа исчез.
+    path('controller/<int:pk>/locks', ControllersLockView.as_view()),
     path('admin/', admin.site.urls),
 ]

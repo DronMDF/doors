@@ -4,7 +4,7 @@
 # of the MIT license.  See the LICENSE file for details.
 
 from django.test import TestCase
-from doors.models import Controller
+from doors.models import Controller, Lock
 import json
 
 
@@ -20,3 +20,14 @@ class ControllerViewTest(TestCase):
 		rep = json.loads(response.content.decode('utf8'))
 		self.assertEqual(rep['controllers'][0]['address'], '3.2.3.2')
 		self.assertEqual(rep['controllers'][0]['port'], 7777)
+
+	def testControllerLocksUpdate(self):
+		controller = Controller.objects.create(address='3.2.3.2', port='7777')
+		self.client.post(
+			'/controller/%u/locks' % controller.id,
+			{"locks": [18, 15, 12]},
+			content_type='application/json'
+		)
+		locks = Lock.objects.filter(controller=controller)
+		self.assertListEqual(sorted(l.hwid for l in locks), [12, 15, 18])
+

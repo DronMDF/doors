@@ -9,3 +9,9 @@ from django.db import models
 class Controller(models.Model):
 	address = models.GenericIPAddressField()
 	port = models.IntegerField()
+	# @todo #92 Добавить контроллеру идентификатор
+	#  Который вовсе не обязательно совпадает с pk.
+
+class Lock(models.Model):
+	controller = models.ForeignKey(Controller, on_delete=models.CASCADE)
+	hwid = models.IntegerField()
