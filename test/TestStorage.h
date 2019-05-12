@@ -13,7 +13,6 @@ public:
 	// Secondary
 	TestStorage(const std::string &query, const nlohmann::json &result);
 
-	nlohmann::json query(const std::string &query) const override;
 	void async_query(
 		const std::string &query,
 		const std::shared_ptr<const StorageHandler> &handler

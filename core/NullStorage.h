@@ -8,7 +8,6 @@
 
 class NullStorage final : public Storage {
 public:
-	nlohmann::json query(const std::string &query) const override;
 	void async_query(
 		const std::string &query,
 		const std::shared_ptr<const StorageHandler> &handler

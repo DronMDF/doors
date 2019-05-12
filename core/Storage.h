@@ -9,6 +9,8 @@
 class StorageHandler {
 public:
 	virtual ~StorageHandler() = default;
+	// @todo #85 Должен ли handler принимать еще код ошибки?
+	//  Что делать, если storage не в состоянии предоставить результат?
 	virtual void handle(const nlohmann::json &data) const = 0;
 };
 
@@ -16,8 +18,6 @@ class Storage {
 public:
 	virtual ~Storage() = default;
 
-	// @todo #66 Нужно убить синхронное API в Storage
-	virtual nlohmann::json query(const std::string &query) const = 0;
 	virtual void async_query(
 		const std::string &query,
 		const std::shared_ptr<const StorageHandler> &handler

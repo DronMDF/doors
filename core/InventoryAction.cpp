@@ -15,6 +15,29 @@
 
 using namespace std;
 
+class InventoryStorageHandler final : public StorageHandler {
+public:
+	InventoryStorageHandler(const InventoryReq &req, const shared_ptr<Socket> &socket)
+		: req(req), socket(socket)
+	{
+	}
+
+	void handle(const nlohmann::json &data) const override
+	{
+		const auto locks = data["locks"];
+
+		ChainBytes reply(
+			make_shared<InventoryBytes>(be32toh(req.id)),
+			make_shared<List32Bytes>(vector<uint32_t>(locks.begin(), locks.end()))
+		);
+
+		socket->send(reply.raw());
+	}
+private:
+	const InventoryReq req;
+	const shared_ptr<Socket> socket;
+};
+
 InventoryAction::InventoryAction(const shared_ptr<Storage> &storage)
 	: storage(storage)
 {
@@ -38,18 +61,11 @@ bool InventoryAction::process(
 		throw runtime_error("Unknown request command");
 	}
 
-	const auto data = DefaultStorage(
+	DefaultStorage(
 		storage,
 		R"({ "locks": [] })"_json
-	).query("/locks");
-	const auto locks = data["locks"];
-
-	ChainBytes reply(
-		make_shared<InventoryBytes>(be32toh(req->id)),
-		make_shared<List32Bytes>(vector<uint32_t>(locks.begin(), locks.end()))
-	);
-
-	socket->send(reply.raw());
-
+	).async_query("/locks", make_shared<InventoryStorageHandler>(*req, socket));
+	// @todo #85 InventoryAction возвращает результат асинхронно.
+	//  Мы все делаем асинхронно.
 	return true;
 }

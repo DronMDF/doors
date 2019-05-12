@@ -4,10 +4,8 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #include "StatusTask.h"
-#include <cstring>
-#include <iomanip>
-#include <sstream>
 #include <vector>
+#include <fmt/format.h>
 #include "ChainBytes.h"
 #include "DefaultStorage.h"
 #include "KeyStatusBytes.h"
@@ -16,19 +14,47 @@
 
 using namespace std;
 
+class StatusStorageHandler final : public StorageHandler {
+public:
+	StatusStorageHandler(
+		const KeyStatusRequest &request,
+		const shared_ptr<Socket> &socket
+	) : request(request), socket(socket)
+	{
+	}
+
+	void handle(const nlohmann::json &data) const override
+	{
+		vector<uint32_t> locks;
+		for (const auto &l : data["locks"]) {
+			locks.push_back(l.get<uint32_t>());
+		}
+
+		ChainBytes rv(
+			make_shared<KeyStatusBytes>(
+				be32toh(request.id),
+				be64toh(request.key),
+				data["contract"].get<uint32_t>(),
+				data["expired"].get<uint32_t>(),
+				data["money"].get<uint32_t>()
+			),
+			// @todo #52 List32Bytes должен принимать на вход json array
+			make_shared<List32Bytes>(locks)
+		);
+		socket->send(rv.raw());
+	}
+
+private:
+	const KeyStatusRequest request;
+	const shared_ptr<Socket> socket;
+};
+
 StatusTask::StatusTask(
 	const KeyStatusRequest &request,
 	const shared_ptr<Socket> &socket,
 	const shared_ptr<Storage> &storage
-) : request(request), socket(socket), storage(storage)
-{
-}
-
-void StatusTask::run() const
-{
-	ostringstream query;
-	query << "/status/" << hex << setw(16) << setfill('0') << be64toh(request.key);
-	const auto data = DefaultStorage(
+) : request(request), socket(socket), storage(
+	make_shared<DefaultStorage>(
 		storage,
 		R"({
 			"contract": 0,
@@ -36,23 +62,14 @@ void StatusTask::run() const
 			"money": 0,
 			"locks": []
 		})"_json
-	).query(query.str());
+	))
+{
+}
 
-	vector<uint32_t> locks;
-	for (const auto &l : data["locks"]) {
-		locks.push_back(l.get<uint32_t>());
-	}
-
-	ChainBytes rv(
-		make_shared<KeyStatusBytes>(
-			be32toh(request.id),
-			be64toh(request.key),
-			data["contract"].get<uint32_t>(),
-			data["expired"].get<uint32_t>(),
-			data["money"].get<uint32_t>()
-		),
-		// @todo #52 List32Bytes должен принимать на вход json array
-		make_shared<List32Bytes>(locks)
+void StatusTask::run() const
+{
+	storage->async_query(
+		fmt::format("/status/{:016x}", be64toh(request.key)),
+		make_shared<StatusStorageHandler>(request, socket)
 	);
-	socket->send(rv.raw());
 }

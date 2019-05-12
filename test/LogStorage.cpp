@@ -7,11 +7,6 @@
 
 using namespace std;
 
-nlohmann::json LogStorage::query(const string &query [[gnu::unused]]) const
-{
-	throw runtime_error("No log query");
-}
-
 void LogStorage::async_query(
 	const string &query [[gnu::unused]],
 	const shared_ptr<const StorageHandler> &handler [[gnu::unused]]

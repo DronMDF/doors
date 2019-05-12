@@ -17,11 +17,6 @@ TestStorage::TestStorage(const string &query, const nlohmann::json &result)
 {
 }
 
-nlohmann::json TestStorage::query(const string &query) const
-{
-	return info.at(query);
-}
-
 void TestStorage::async_query(
 	const string &query,
 	const shared_ptr<const StorageHandler> &handler
