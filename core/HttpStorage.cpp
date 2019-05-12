@@ -11,6 +11,13 @@
 using namespace std;
 using asio::ip::tcp;
 
+class HttpHandler final : public StorageHandler {
+public:
+	void handle(const nlohmann::json &data [[gnu::unused]]) const override
+	{
+	}
+};
+
 HttpStorage::HttpStorage(const string &uri, const shared_ptr<IoService> &service)
 	: uri(uri), service(service)
 {
@@ -30,10 +37,19 @@ void HttpStorage::query(
 	service->async_http_request(uri, request, handler);
 }
 
-void HttpStorage::update(
-	const string &query [[gnu::unused]],
-	const nlohmann::json &data [[gnu::unused]]
-)
+void HttpStorage::update(const string &query, const nlohmann::json &data)
 {
-	// @todo #66 Обновление данных через HttpStorage
+	const string dump = data.dump();
+	const string request = fmt::format(
+		"POST {0} HTTP/1.1\r\n"
+		"ContentType: application/json\r\n"
+		"ContentLength: {1}\r\n"
+		"\r\n"
+		"{2}",
+		query,
+		dump.size(),
+		dump
+	);
+
+	service->async_http_request(uri, request, make_shared<HttpHandler>());
 }

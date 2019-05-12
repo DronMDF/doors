@@ -23,5 +23,7 @@ public:
 		const std::shared_ptr<const StorageHandler> &handler
 	) const = 0;
 
+	// @todo #87 Storage::update должен принимать на вход callback
+	//  Через коллбек можно делать ретрансмиты или рапортовать об ошибках.
 	virtual void update(const std::string &query, const nlohmann::json &data) = 0;
 };
