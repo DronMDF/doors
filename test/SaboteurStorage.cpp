@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void SaboteurStorage::async_query(
+void SaboteurStorage::query(
 	const string &query,
 	const shared_ptr<const StorageHandler> &handler
 ) const

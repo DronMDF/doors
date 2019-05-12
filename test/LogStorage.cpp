@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void LogStorage::async_query(
+void LogStorage::query(
 	const string &query [[gnu::unused]],
 	const shared_ptr<const StorageHandler> &handler [[gnu::unused]]
 ) const

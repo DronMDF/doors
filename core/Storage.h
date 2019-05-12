@@ -18,7 +18,7 @@ class Storage {
 public:
 	virtual ~Storage() = default;
 
-	virtual void async_query(
+	virtual void query(
 		const std::string &query,
 		const std::shared_ptr<const StorageHandler> &handler
 	) const = 0;

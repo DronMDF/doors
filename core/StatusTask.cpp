@@ -68,7 +68,7 @@ StatusTask::StatusTask(
 
 void StatusTask::run() const
 {
-	storage->async_query(
+	storage->query(
 		fmt::format("/status/{:016x}", be64toh(request.key)),
 		make_shared<StatusStorageHandler>(request, socket)
 	);

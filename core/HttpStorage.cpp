@@ -16,7 +16,7 @@ HttpStorage::HttpStorage(const string &uri, const shared_ptr<IoService> &service
 {
 }
 
-void HttpStorage::async_query(
+void HttpStorage::query(
 	const string &query,
 	const shared_ptr<const StorageHandler> &handler
 ) const

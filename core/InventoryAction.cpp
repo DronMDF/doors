@@ -64,7 +64,7 @@ bool InventoryAction::process(
 	DefaultStorage(
 		storage,
 		R"({ "locks": [] })"_json
-	).async_query("/locks", make_shared<InventoryStorageHandler>(*req, socket));
+	).query("/locks", make_shared<InventoryStorageHandler>(*req, socket));
 	// @todo #85 InventoryAction возвращает результат асинхронно.
 	//  Мы все делаем асинхронно.
 	return true;

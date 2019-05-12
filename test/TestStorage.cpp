@@ -17,7 +17,7 @@ TestStorage::TestStorage(const string &query, const nlohmann::json &result)
 {
 }
 
-void TestStorage::async_query(
+void TestStorage::query(
 	const string &query,
 	const shared_ptr<const StorageHandler> &handler
 ) const

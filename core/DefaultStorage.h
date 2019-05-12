@@ -10,7 +10,7 @@ class DefaultStorage final : public Storage {
 public:
 	DefaultStorage(const std::shared_ptr<Storage> &storage, const nlohmann::json &data);
 
-	void async_query(
+	void query(
 		const std::string &query,
 		const std::shared_ptr<const StorageHandler> &handler
 	) const override;

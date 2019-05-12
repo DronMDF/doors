@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void NullStorage::async_query(
+void NullStorage::query(
 	const string &query [[gnu::unused]],
 	const shared_ptr<const StorageHandler> &handler
 ) const

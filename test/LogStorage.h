@@ -8,7 +8,7 @@
 
 class LogStorage final : public Storage {
 public:
-	void async_query(
+	void query(
 		const std::string &query,
 		const std::shared_ptr<const StorageHandler> &handler
 	) const override;

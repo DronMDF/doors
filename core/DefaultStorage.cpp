@@ -32,12 +32,12 @@ DefaultStorage::DefaultStorage(const shared_ptr<Storage> &storage, const nlohman
 {
 }
 
-void DefaultStorage::async_query(
+void DefaultStorage::query(
 	const string &query,
 	const shared_ptr<const StorageHandler> &handler
 ) const
 {
-	storage->async_query(
+	storage->query(
 		query,
 		make_shared<DefaultStorageHandler>(handler, data)
 	);
