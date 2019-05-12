@@ -7,12 +7,7 @@
 
 using namespace std;
 
-nlohmann::json NullStorage::query(const string &query [[gnu::unused]]) const
-{
-	return nlohmann::json::object();
-}
-
-void NullStorage::async_query(
+void NullStorage::query(
 	const string &query [[gnu::unused]],
 	const shared_ptr<const StorageHandler> &handler
 ) const

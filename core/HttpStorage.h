@@ -11,8 +11,7 @@ class HttpStorage final : public Storage {
 public:
 	HttpStorage(const std::string &uri, const std::shared_ptr<IoService> &service);
 
-	nlohmann::json query(const std::string &query) const override;
-	void async_query(
+	void query(
 		const std::string &query,
 		const std::shared_ptr<const StorageHandler> &handler
 	) const override;

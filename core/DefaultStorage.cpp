@@ -32,26 +32,12 @@ DefaultStorage::DefaultStorage(const shared_ptr<Storage> &storage, const nlohman
 {
 }
 
-nlohmann::json DefaultStorage::query(const string &query) const
-{
-	try {
-		const auto result = storage->query(query);
-		auto rv = data;
-		rv.merge_patch(result);
-		return rv;
-	} catch (const std::exception &) {
-		// @todo #38 Необходимо обеспечить возможность протоколирования.
-		//  Здесь какраз подходящее место, чтобы записать строчку в лог
-		return data;
-	}
-}
-
-void DefaultStorage::async_query(
+void DefaultStorage::query(
 	const string &query,
 	const shared_ptr<const StorageHandler> &handler
 ) const
 {
-	storage->async_query(
+	storage->query(
 		query,
 		make_shared<DefaultStorageHandler>(handler, data)
 	);
