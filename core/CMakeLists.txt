@@ -15,6 +15,7 @@ ADD_COMPILE_OPTIONS(
 
 ADD_LIBRARY(
 	core
+	AsioScheduler.cpp
 	AsioSocket.cpp
 	BootstrapTask.cpp
 	BytesInventory.cpp
