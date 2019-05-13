@@ -10,7 +10,7 @@
 #include <core/BootstrapTask.h>
 #include <core/DispatchedAction.h>
 #include <core/HttpStorage.h>
-#include <core/ImmediatlyScheduler.h>
+#include <core/AsioScheduler.h>
 #include <core/Listener.h>
 #include <core/NetIoService.h>
 #include <core/StatusAction.h>
@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 		asio::io_context io_context;
 
 		const auto service = make_shared<NetIoService>(&io_context);
-		const auto scheduler = make_shared<ImmediatlyScheduler>();
+		const auto scheduler = make_shared<AsioScheduler>(&io_context);
 		const auto storage = make_shared<HttpStorage>(args::get(uri), service);
 
 		// Получаем стартовую информацию (из БД)
