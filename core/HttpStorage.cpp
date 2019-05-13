@@ -42,8 +42,8 @@ void HttpStorage::update(const string &query, const nlohmann::json &data)
 	const string dump = data.dump();
 	const string request = fmt::format(
 		"POST {0} HTTP/1.1\r\n"
-		"ContentType: application/json\r\n"
-		"ContentLength: {1}\r\n"
+		"Content-Type: text/json\r\n"
+		"Content-Length: {1}\r\n"
 		"\r\n"
 		"{2}",
 		query,

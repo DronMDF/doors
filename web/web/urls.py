@@ -15,10 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from doors.views import ControllersView, ControllersLockView
+from doors.views import ControllersView, controller_locks_update
 
 urlpatterns = [
     path('controller/', ControllersView.as_view()),
-    path('controller/<int:pk>/locks', ControllersLockView.as_view()),
+    path('controller/<int:pk>/locks', controller_locks_update),
     path('admin/', admin.site.urls),
 ]
