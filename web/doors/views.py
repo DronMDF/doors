@@ -19,10 +19,11 @@ class ControllersView(generic.ListView):
 @csrf_exempt
 def controller_locks_update(request, pk):
 	controller = Controller.objects.get(pk=pk)
-	locks = json.loads(request.body.decode('utf8')).get('locks')
-	# @todo #92 Нужно сравнивать списки замков с имеющимися
-	#  И добавлять только если замок новый
-	for l in locks:
-		Lock.objects.create(controller=controller, hwid=l)
+	old_locks = {l.hwid for l in Lock.objects.filter(controller=controller)}
+	Lock.objects.bulk_create(
+		Lock(controller=controller, hwid=l)
+		for l in json.loads(request.body.decode('utf8')).get('locks')
+		if l not in old_locks
+	)
 	return JsonResponse({})
 
