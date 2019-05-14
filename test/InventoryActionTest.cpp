@@ -7,8 +7,8 @@
 #include <protocol.h>
 #include <core/InventoryAction.h>
 #include <core/NullStorage.h>
+#include <core/PredefinedStorage.h>
 #include "ActionRepr.h"
-#include "TestStorage.h"
 
 using namespace std;
 using namespace oout;
@@ -36,7 +36,7 @@ InventoryActionTest::InventoryActionTest()
 				make_shared<TestEqual>(
 					make_shared<ActionRepr>(
 						make_shared<InventoryAction>(
-							make_shared<TestStorage>(
+							make_shared<PredefinedStorage>(
 								"/locks",
 								R"({
 									"locks": [1, 2, 3, 4, 5]
@@ -60,7 +60,6 @@ InventoryActionTest::InventoryActionTest()
 	)
 {
 }
-
 
 unique_ptr<const oout::Result> InventoryActionTest::result() const
 {

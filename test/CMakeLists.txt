@@ -24,7 +24,6 @@ ADD_EXECUTABLE(
 	TestAction.cpp
 	TestIoService.cpp
 	TestSocket.cpp
-	TestStorage.cpp
 )
 
 TARGET_LINK_LIBRARIES(

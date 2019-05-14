@@ -6,8 +6,8 @@
 #include "BootstrapTaskTest.h"
 #include <core/BootstrapTask.h>
 #include <core/ImmediatlyScheduler.h>
+#include <core/PredefinedStorage.h>
 #include "LogIoService.h"
-#include "TestStorage.h"
 
 using namespace std;
 using namespace oout;
@@ -37,7 +37,7 @@ BootstrapTaskTest::BootstrapTaskTest()
 				"BootstrapTask inventory controllers",
 				make_shared<TestStartsWith>(
 					make_shared<BootstrapUdpRepr>(
-						make_shared<TestStorage>(
+						make_shared<PredefinedStorage>(
 							"/controller/",
 							R"({
 								"controllers": [{

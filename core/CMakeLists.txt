@@ -37,6 +37,7 @@ ADD_LIBRARY(
 	Listener.cpp
 	NullStorage.cpp
 	NetIoService.cpp
+	PredefinedStorage.cpp
 	RawBytes.cpp
 	StatusAction.cpp
 	StatusTask.cpp
