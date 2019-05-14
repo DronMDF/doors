@@ -31,3 +31,19 @@ class ControllerViewTest(TestCase):
 		locks = Lock.objects.filter(controller=controller)
 		self.assertListEqual(sorted(l.hwid for l in locks), [12, 15, 18])
 
+	def testControllerLockUpdateWithoutDoubles(self):
+		controller = Controller.objects.create(address='3.2.3.2', port='7777')
+		self.client.post(
+			'/controller/%u/locks' % controller.id,
+			{"locks": [18]},
+			content_type='application/json'
+		)
+		self.client.post(
+			'/controller/%u/locks' % controller.id,
+			{"locks": [18]},
+			content_type='application/json'
+		)
+		locks = Lock.objects.filter(controller=controller)
+		self.assertListEqual(sorted(l.hwid for l in locks), [18])
+
+
