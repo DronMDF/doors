@@ -4,14 +4,14 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
-#include <core/Storage.h>
+#include "Storage.h"
 
-class TestStorage final : public Storage {
+class PredefinedStorage final : public Storage {
 public:
 	// Primary
-	explicit TestStorage(const std::map<std::string, nlohmann::json> &info);
+	explicit PredefinedStorage(const std::map<std::string, nlohmann::json> &info);
 	// Secondary
-	TestStorage(const std::string &query, const nlohmann::json &result);
+	PredefinedStorage(const std::string &query, const nlohmann::json &result);
 
 	void query(
 		const std::string &query,

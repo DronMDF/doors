@@ -7,10 +7,10 @@
 #include <protocol.h>
 #include <2out/2out.h>
 #include <core/ImmediatlyScheduler.h>
+#include <core/PredefinedStorage.h>
 #include <core/StatusAction.h>
 #include "ActionRepr.h"
 #include "SaboteurStorage.h"
-#include "TestStorage.h"
 
 using namespace std;
 using namespace oout;
@@ -23,7 +23,7 @@ StatusActionTest::StatusActionTest()
 				make_shared<TestEqual>(
 					make_shared<ActionRepr>(
 						make_shared<StatusAction>(
-							make_shared<TestStorage>(
+							make_shared<PredefinedStorage>(
 								"/status/0000000000000001",
 								// @todo #38 Слово balance
 								//  лучше подходит
@@ -76,7 +76,6 @@ StatusActionTest::StatusActionTest()
 	)
 {
 }
-
 
 unique_ptr<const oout::Result> StatusActionTest::result() const
 {
