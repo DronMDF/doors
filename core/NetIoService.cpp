@@ -224,7 +224,6 @@ void NetIoService::async_http_request(
 ) const
 {
 	smatch m;
-	// @todo #66 copy-paste from HttpStorage
 	if (!regex_match(uri, m, regex(R"(http://([\w\.]+):(\d+))"))) {
 		throw runtime_error("Wrong uri in NetIoService");
 	}
