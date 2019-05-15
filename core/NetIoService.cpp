@@ -153,17 +153,23 @@ public:
 			throw runtime_error("Wrong response header in HttpAsyncRequestStorage");
 		}
 
-		asio::async_read(
-			socket,
-			reply,
-			asio::transfer_at_least(stoi(m[1])),
-			bind(
-				&HttpAsyncRequest::handle_body,
-				shared_from_this(),
-				placeholders::_1,
-				placeholders::_2
-			)
-		);
+		const size_t body_size = stoi(m[1]);
+
+		if (reply.size() >= body_size) {
+			handle_body({}, body_size);
+		} else {
+			asio::async_read(
+				socket,
+				reply,
+				asio::transfer_at_least(body_size),
+				bind(
+					&HttpAsyncRequest::handle_body,
+					shared_from_this(),
+					placeholders::_1,
+					placeholders::_2
+				)
+			);
+		}
 	}
 
 	void handle_body(const error_code &error, size_t bytes)
