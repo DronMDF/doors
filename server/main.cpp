@@ -14,6 +14,7 @@
 #include <core/Listener.h>
 #include <core/NetIoService.h>
 #include <core/StatusAction.h>
+#include <core/TracedAction.h>
 
 using namespace std;
 using asio::ip::udp;
@@ -42,7 +43,10 @@ int main(int argc, char **argv)
 			args::get(port),
 			make_shared<DispatchedAction>(
 				KEY_STATUS_REQ,
-				make_shared<StatusAction>(storage, scheduler)
+				make_shared<TracedAction>(
+					"STATUS",
+					make_shared<StatusAction>(storage, scheduler)
+				)
 			)
 		)->start();
 

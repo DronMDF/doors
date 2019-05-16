@@ -11,6 +11,7 @@
 #include <core/InventoryAction.h>
 #include <core/Listener.h>
 #include <core/PredefinedStorage.h>
+#include <core/TracedAction.h>
 
 using namespace std;
 
@@ -29,10 +30,17 @@ int main(int argc, char **argv)
 			args::get(port),
 			make_shared<DispatchedAction>(
 				INVENTORY_REQ,
-				make_shared<InventoryAction>(
-					make_shared<PredefinedStorage>(
-						"/locks",
-						R"({"locks":[1, 2, 4, 5, 6, 7, 8, 9, 10]})"_json
+				make_shared<TracedAction>(
+					"INVENTORY",
+					make_shared<InventoryAction>(
+						make_shared<PredefinedStorage>(
+							"/locks",
+							R"({"locks":[
+								1, 2, 4,
+								5, 6, 7,
+								8, 9, 10
+							]})"_json
+						)
 					)
 				)
 			)

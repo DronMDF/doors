@@ -15,6 +15,7 @@ public:
 
 	// @todo #31 При такой реализации DispatchedAction нет необходимости в коде возврата
 	virtual bool process(
+		// @todo #116 В Action::process cтоит передавать Bytes
 		const std::vector<uint8_t> &request,
 		const std::shared_ptr<Socket> &socket
 	) const = 0;

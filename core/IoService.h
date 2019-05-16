@@ -12,6 +12,8 @@ class Bytes;
 class StorageHandler;
 class UdpHandler;
 
+// @todo #116 Операции ввода-вывода можно трассировать написав декоратор на IoService
+//  И на Storage тоже...
 class IoService {
 public:
 	virtual ~IoService() = default;
