@@ -41,4 +41,5 @@ ADD_LIBRARY(
 	RawBytes.cpp
 	StatusAction.cpp
 	StatusTask.cpp
+	TracedAction.cpp
 )
