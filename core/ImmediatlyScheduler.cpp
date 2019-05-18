@@ -8,7 +8,10 @@
 
 using namespace std;
 
-void ImmediatlyScheduler::schedule(const shared_ptr<Task> &task) const
+void ImmediatlyScheduler::schedule(
+	const shared_ptr<Task> &task,
+	const chrono::steady_clock::duration &delay [[gnu::unused]]
+) const
 {
 	task->run();
 }

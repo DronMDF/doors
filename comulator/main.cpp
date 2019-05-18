@@ -3,15 +3,19 @@
 // This software may be modified and distributed under the terms
 // of the MIT license.  See the LICENSE file for details.
 
+#include <chrono>
 #include <iostream>
 #include <args.hxx>
 #include <asio/ts/internet.hpp>
 #include <protocol.h>
+#include <core/AsioScheduler.h>
 #include <core/DispatchedAction.h>
 #include <core/InventoryAction.h>
 #include <core/Listener.h>
+#include <core/NetIoService.h>
 #include <core/PredefinedStorage.h>
 #include <core/TracedAction.h>
+#include "LockTask.h"
 
 using namespace std;
 
@@ -24,7 +28,19 @@ int main(int argc, char **argv)
 	try {
 		parser.ParseCLI(argc, argv);
 
+		vector<int> locks = {1, 2, 4, 5, 6, 7, 8, 9, 10, 15};
+
 		asio::io_context io_context;
+		const auto service = make_shared<NetIoService>(&io_context);
+		const auto scheduler = make_shared<AsioScheduler>(&io_context);
+
+		for (const auto &l : locks) {
+			scheduler->schedule(
+				make_shared<LockTask>(l, "127.0.0.1", 4000, service, scheduler),
+				1min * l
+			);
+		}
+
 		make_shared<Listener>(
 			&io_context,
 			args::get(port),
@@ -35,11 +51,7 @@ int main(int argc, char **argv)
 					make_shared<InventoryAction>(
 						make_shared<PredefinedStorage>(
 							"/locks",
-							R"({"locks":[
-								1, 2, 4,
-								5, 6, 7,
-								8, 9, 10
-							]})"_json
+							nlohmann::json{{"locks", locks}}
 						)
 					)
 				)
