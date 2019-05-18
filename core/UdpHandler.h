@@ -5,6 +5,8 @@
 
 #pragma once
 
+class Bytes;
+
 class UdpHandler {
 public:
 	virtual ~UdpHandler() = default;

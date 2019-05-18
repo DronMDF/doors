@@ -4,6 +4,7 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
+#include <chrono>
 #include <memory>
 
 class Task;
@@ -12,5 +13,8 @@ class Scheduler {
 public:
 	virtual ~Scheduler() = default;
 
-	virtual void schedule(const std::shared_ptr<Task> &task) const = 0;
+	virtual void schedule(
+		const std::shared_ptr<Task> &task,
+		const std::chrono::steady_clock::duration &delay = {}
+	) const = 0;
 };

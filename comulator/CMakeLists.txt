@@ -18,6 +18,7 @@ ADD_COMPILE_OPTIONS(
 ADD_EXECUTABLE(
 	comulator
 	main.cpp
+	LockTask.cpp
 )
 
 TARGET_LINK_LIBRARIES(

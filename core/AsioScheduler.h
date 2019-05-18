@@ -10,7 +10,10 @@
 class AsioScheduler final : public Scheduler {
 public:
 	explicit AsioScheduler(asio::io_context *io_context);
-	void schedule(const std::shared_ptr<Task> &task) const override;
+	void schedule(
+		const std::shared_ptr<Task> &task,
+		const std::chrono::steady_clock::duration &delay = {}
+	) const override;
 private:
 	asio::io_context *io_context;
 };

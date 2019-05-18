@@ -13,7 +13,13 @@ AsioScheduler::AsioScheduler(asio::io_context *io_context)
 {
 }
 
-void AsioScheduler::schedule(const shared_ptr<Task> &task) const
+void AsioScheduler::schedule(
+	const shared_ptr<Task> &task,
+	const chrono::steady_clock::duration &delay [[gnu::unused]]
+) const
 {
+	// @todo #113 Если delay определен - операцию нужно производить
+	//  после того, как выйдет отведенное время.
+	//  Не блокируюя естественно остальные.
 	asio::post(*io_context, [task]{ task->run(); });
 }
