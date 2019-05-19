@@ -17,6 +17,7 @@ ADD_EXECUTABLE(
 	KeyStatusBytesTest.cpp
 	List32BytesTest.cpp
 	List64BytesTest.cpp
+	LockBytesTest.cpp
 	LogIoService.cpp
 	LogStorage.cpp
 	SaboteurStorage.cpp

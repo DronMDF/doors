@@ -35,6 +35,7 @@ ADD_LIBRARY(
 	List32Bytes.cpp
 	List64Bytes.cpp
 	Listener.cpp
+	LockBytes.cpp
 	NullStorage.cpp
 	NetIoService.cpp
 	PredefinedStorage.cpp

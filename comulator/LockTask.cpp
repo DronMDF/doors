@@ -7,7 +7,7 @@
 #include <iostream>
 #include <core/Bytes.h>
 #include <core/BytesOk.h>
-#include <core/List32Bytes.h>
+#include <core/LockBytes.h>
 #include <core/IoService.h>
 #include <core/UdpHandler.h>
 
@@ -54,9 +54,7 @@ void LockTask::run() const
 	service->async_udp_request(
 		address,
 		port,
-		// @todo #113 Требуется реализация LockBytes
-		//  make_shared<LockBytes>(lock_id, 0x123456789ABCDEF),
-		make_shared<List32Bytes>(vector<uint32_t>{1, 2}),
+		make_shared<LockBytes>(0, lock_id, 0x123456789ABCDEF),
 		make_shared<LockReplyHandler>(lock_id)
 	);
 }
