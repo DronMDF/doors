@@ -19,6 +19,7 @@ ADD_LIBRARY(
 	AsioSocket.cpp
 	BootstrapTask.cpp
 	BytesInventory.cpp
+	BytesLock.cpp
 	BytesOk.cpp
 	ConfigBytes.cpp
 	ChainBytes.cpp
@@ -35,9 +36,11 @@ ADD_LIBRARY(
 	List32Bytes.cpp
 	List64Bytes.cpp
 	Listener.cpp
+	LockAction.cpp
 	LockBytes.cpp
 	NullStorage.cpp
 	NetIoService.cpp
+	OkBytes.cpp
 	PredefinedStorage.cpp
 	RawBytes.cpp
 	StatusAction.cpp

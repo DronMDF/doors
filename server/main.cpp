@@ -12,6 +12,7 @@
 #include <core/HttpStorage.h>
 #include <core/AsioScheduler.h>
 #include <core/Listener.h>
+#include <core/LockAction.h>
 #include <core/NetIoService.h>
 #include <core/StatusAction.h>
 #include <core/TracedAction.h>
@@ -42,6 +43,12 @@ int main(int argc, char **argv)
 			&io_context,
 			args::get(port),
 			make_shared<DispatchedAction>(
+				// @todo #129 Сервер обрабатывает запросы на открытие замка
+				LOCK,
+				make_shared<TracedAction>(
+					"LOCK",
+					make_shared<LockAction>()
+				),
 				KEY_STATUS_REQ,
 				make_shared<TracedAction>(
 					"STATUS",
