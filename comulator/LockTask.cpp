@@ -7,16 +7,21 @@
 #include <iostream>
 #include <core/Bytes.h>
 #include <core/BytesOk.h>
-#include <core/LockBytes.h>
 #include <core/IoService.h>
+#include <core/LockBytes.h>
+#include <core/Scheduler.h>
 #include <core/UdpHandler.h>
+#include "UnlockTask.h"
 
 using namespace std;
 
 class LockReplyHandler final : public UdpHandler {
 public:
-	explicit LockReplyHandler(int lock_no)
-		: lock_no(lock_no)
+	explicit LockReplyHandler(
+		int lock_id,
+		const shared_ptr<Scheduler> &scheduler,
+		const shared_ptr<Task> &task
+	) : lock_id(lock_id), scheduler(scheduler), task(task)
 	{
 	}
 
@@ -27,16 +32,19 @@ public:
 		//  Там можно использовать DispatchedAction и разруливать запросы...
 		try {
 			BytesOk status(reply->raw());
-			cout << "Lock " << lock_no << " is locked" << endl;
-			// @todo #113 Если замок открылся - нужно запланировать закрытие
+			cout << "Lock " << lock_id << " is locked" << endl;
+			scheduler->schedule(task, 3min);
 		} catch (const exception &e) {
-			cout << "Lock " << lock_no << " is not locked" << endl;
+			cout << "Lock " << lock_id << " is not locked" << endl;
 			// @todo #113 Если замок не открылся - нужно повторно обратиться к серверу.
 			//  Но эти попытки должны быть ограничены
 		}
 	}
+
 private:
-	int lock_no;
+	int lock_id;
+	const shared_ptr<Scheduler> scheduler;
+	const shared_ptr<Task> task;
 };
 
 LockTask::LockTask(
@@ -51,10 +59,19 @@ LockTask::LockTask(
 
 void LockTask::run() const
 {
+	// @todo #123 Для UDP сервиса адрес и порт напрашиваются в инкапсуляцию.
+	//  Довольно неудобно постоянно таскать их по всем классам.
+	//  Вероятно мы можем сделать базовый udp_io, и навешивать на него адрес endpoint,
+	//  чтобы минимизировать количество параметров в данных классах
+	//  И если говорим про запросы - этот сокет можно заранее открыть и всегда пользоваться им.
 	service->async_udp_request(
 		address,
 		port,
 		make_shared<LockBytes>(0, lock_id, 0x123456789ABCDEF),
-		make_shared<LockReplyHandler>(lock_id)
+		make_shared<LockReplyHandler>(
+			lock_id,
+			scheduler,
+			make_shared<UnlockTask>(lock_id, address, port, service, scheduler)
+		)
 	);
 }

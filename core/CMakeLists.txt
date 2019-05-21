@@ -46,4 +46,5 @@ ADD_LIBRARY(
 	StatusAction.cpp
 	StatusTask.cpp
 	TracedAction.cpp
+	UnlockBytes.cpp
 )

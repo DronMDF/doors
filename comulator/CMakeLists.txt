@@ -19,6 +19,7 @@ ADD_EXECUTABLE(
 	comulator
 	main.cpp
 	LockTask.cpp
+	UnlockTask.cpp
 )
 
 TARGET_LINK_LIBRARIES(
