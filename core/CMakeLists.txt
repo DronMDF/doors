@@ -21,6 +21,7 @@ ADD_LIBRARY(
 	BytesInventory.cpp
 	BytesLock.cpp
 	BytesOk.cpp
+	BytesUnlock.cpp
 	ConfigBytes.cpp
 	ChainBytes.cpp
 	DefaultStorage.cpp
@@ -46,5 +47,6 @@ ADD_LIBRARY(
 	StatusAction.cpp
 	StatusTask.cpp
 	TracedAction.cpp
+	UnlockAction.cpp
 	UnlockBytes.cpp
 )

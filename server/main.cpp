@@ -16,6 +16,7 @@
 #include <core/NetIoService.h>
 #include <core/StatusAction.h>
 #include <core/TracedAction.h>
+#include <core/UnlockAction.h>
 
 using namespace std;
 using asio::ip::udp;
@@ -43,7 +44,11 @@ int main(int argc, char **argv)
 			&io_context,
 			args::get(port),
 			make_shared<DispatchedAction>(
-				// @todo #129 Сервер обрабатывает запросы на открытие замка
+				UNLOCK,
+				make_shared<TracedAction>(
+					"UNLOCK",
+					make_shared<UnlockAction>()
+				),
 				LOCK,
 				make_shared<TracedAction>(
 					"LOCK",
