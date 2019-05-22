@@ -24,6 +24,8 @@ int main(int argc, char **argv)
 	args::ArgumentParser parser("Doors controller emulator", "Done");
 	args::HelpFlag help(parser, "help", "Display this help menu", {'h', "help"});
 	args::ValueFlag<in_port_t> port(parser, "port", "communication port", {'p'}, 5000);
+	args::ValueFlag<string> saddr(parser, "saddr", "server addr", {'S'}, "127.0.0.1");
+	args::ValueFlag<in_port_t> sport(parser, "sport", "server port", {'P'}, 5000);
 
 	try {
 		parser.ParseCLI(argc, argv);
@@ -36,7 +38,13 @@ int main(int argc, char **argv)
 
 		for (const auto &l : locks) {
 			scheduler->schedule(
-				make_shared<LockTask>(l, "127.0.0.1", 4000, service, scheduler),
+				make_shared<LockTask>(
+					l,
+					args::get(saddr),
+					args::get(sport),
+					service,
+					scheduler
+				),
 				1min * l
 			);
 		}
