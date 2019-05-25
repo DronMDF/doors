@@ -22,12 +22,3 @@ void TestIoService::async_udp_request(
 {
 	handler->handle(response);
 }
-
-void TestIoService::async_http_request(
-	const string &uri [[gnu::unused]],
-	const string &request [[gnu::unused]],
-	const shared_ptr<const StorageHandler> &handler [[gnu::unused]]
-) const
-{
-	throw runtime_error("Not implemented");
-}

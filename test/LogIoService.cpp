@@ -23,16 +23,6 @@ void LogIoService::async_udp_request(
 	log += "\n";
 }
 
-void LogIoService::async_http_request(
-	const string &uri,
-	const string &request,
-	const shared_ptr<const StorageHandler> &handler [[gnu::unused]]
-) const
-{
-	log += uri + "\n";
-	log += request + "\n";
-}
-
 string LogIoService::asString() const
 {
 	return log;

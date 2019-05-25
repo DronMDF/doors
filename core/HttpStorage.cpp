@@ -18,7 +18,7 @@ public:
 	}
 };
 
-HttpStorage::HttpStorage(const string &uri, const shared_ptr<IoService> &service)
+HttpStorage::HttpStorage(const string &uri, const shared_ptr<HttpService> &service)
 	: uri(uri), service(service)
 {
 }
@@ -34,7 +34,7 @@ void HttpStorage::query(
 		query
 	);
 
-	service->async_http_request(uri, request, handler);
+	service->request(uri, request, handler);
 }
 
 void HttpStorage::update(const string &query, const nlohmann::json &data)
@@ -51,5 +51,5 @@ void HttpStorage::update(const string &query, const nlohmann::json &data)
 		dump
 	);
 
-	service->async_http_request(uri, request, make_shared<HttpHandler>());
+	service->request(uri, request, make_shared<HttpHandler>());
 }
