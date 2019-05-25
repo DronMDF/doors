@@ -24,10 +24,4 @@ public:
 		const std::shared_ptr<const Bytes> &request,
 		const std::shared_ptr<const UdpHandler> &handler
 	) const = 0;
-
-	virtual void async_http_request(
-		const std::string &uri,
-		const std::string &request,
-		const std::shared_ptr<const StorageHandler> &handler
-	) const = 0;
 };

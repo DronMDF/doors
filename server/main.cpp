@@ -7,10 +7,11 @@
 #include <args.hxx>
 #include <asio/ts/internet.hpp>
 #include <protocol.h>
+#include <core/AsioHttpService.h>
+#include <core/AsioScheduler.h>
 #include <core/BootstrapTask.h>
 #include <core/DispatchedAction.h>
 #include <core/HttpStorage.h>
-#include <core/AsioScheduler.h>
 #include <core/Listener.h>
 #include <core/LockAction.h>
 #include <core/NetIoService.h>
@@ -35,7 +36,10 @@ int main(int argc, char **argv)
 
 		const auto service = make_shared<NetIoService>(&io_context);
 		const auto scheduler = make_shared<AsioScheduler>(&io_context);
-		const auto storage = make_shared<HttpStorage>(args::get(uri), service);
+		const auto storage = make_shared<HttpStorage>(
+			args::get(uri),
+			make_shared<AsioHttpService>(&io_context)
+		);
 
 		// Получаем стартовую информацию (из БД)
 		scheduler->schedule(make_shared<BootstrapTask>(storage, scheduler, service));
