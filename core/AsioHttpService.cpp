@@ -17,7 +17,7 @@ public:
 	AsioHttpRequest(
 		asio::io_context *context,
 		const string &request,
-		const shared_ptr<const StorageHandler> &handler
+		const shared_ptr<const HttpHandler> &handler
 	) : socket(*context), request(request), handler(handler)
 	{
 	}
@@ -123,7 +123,7 @@ public:
 private:
 	tcp::socket socket;
 	const string request;
-	const shared_ptr<const StorageHandler> handler;
+	const shared_ptr<const HttpHandler> handler;
 	asio::streambuf reply;
 };
 
@@ -136,7 +136,7 @@ AsioHttpService::AsioHttpService(asio::io_context *context)
 void AsioHttpService::request(
 	const string &uri,
 	const string &request,
-	const shared_ptr<const StorageHandler> &handler
+	const shared_ptr<const HttpHandler> &handler
 ) const
 {
 	smatch m;

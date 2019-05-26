@@ -11,7 +11,22 @@
 using namespace std;
 using asio::ip::tcp;
 
-class HttpHandler final : public StorageHandler {
+class HttpStorageHandler final : public HttpHandler {
+public:
+	explicit HttpStorageHandler(const shared_ptr<const StorageHandler> &handler)
+		: handler(handler)
+	{
+	}
+
+	void handle(const nlohmann::json &data) const override
+	{
+		handler->handle(data);
+	}
+private:
+	const shared_ptr<const StorageHandler> handler;
+};
+
+class NullStorageHandler final : public StorageHandler {
 public:
 	void handle(const nlohmann::json &data [[gnu::unused]]) const override
 	{
@@ -34,7 +49,7 @@ void HttpStorage::query(
 		query
 	);
 
-	service->request(uri, request, handler);
+	service->request(uri, request, make_shared<HttpStorageHandler>(handler));
 }
 
 void HttpStorage::update(const string &query, const nlohmann::json &data)
@@ -51,5 +66,9 @@ void HttpStorage::update(const string &query, const nlohmann::json &data)
 		dump
 	);
 
-	service->request(uri, request, make_shared<HttpHandler>());
+	service->request(
+		uri,
+		request,
+		make_shared<HttpStorageHandler>(make_shared<NullStorageHandler>())
+	);
 }

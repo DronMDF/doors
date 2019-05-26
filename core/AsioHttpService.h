@@ -14,7 +14,7 @@ public:
 	void request(
 		const std::string &uri,
 		const std::string &request,
-		const std::shared_ptr<const StorageHandler> &handler
+		const std::shared_ptr<const HttpHandler> &handler
 	) const override;
 private:
 	asio::io_context *context;
