@@ -18,9 +18,9 @@ public:
 	{
 	}
 
-	void handle(const nlohmann::json &data) const override
+	void handle(const shared_ptr<const HttpResponse> &response) const override
 	{
-		handler->handle(data);
+		handler->handle(response->json());
 	}
 private:
 	const shared_ptr<const StorageHandler> handler;

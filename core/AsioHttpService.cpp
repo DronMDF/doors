@@ -12,6 +12,21 @@
 using namespace std;
 using asio::ip::tcp;
 
+class AsioHttpResponse final : public HttpResponse {
+public:
+	explicit AsioHttpResponse(const string &body)
+		: body(body)
+	{
+	}
+
+	nlohmann::json json() const override
+	{
+		return nlohmann::json::parse(body);
+	}
+private:
+	const string body;
+};
+
 class AsioHttpRequest final : public enable_shared_from_this<AsioHttpRequest> {
 public:
 	AsioHttpRequest(
@@ -117,7 +132,7 @@ public:
 			asio::buffers_begin(reply.data()) + bytes
 		);
 
-		handler->handle(nlohmann::json::parse(body));
+		handler->handle(make_shared<AsioHttpResponse>(body));
 	}
 
 private:
