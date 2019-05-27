@@ -8,13 +8,16 @@
 #include <string>
 #include "Storage.h"
 
+class HttpResponse {
+public:
+	virtual ~HttpResponse() = default;
+	virtual nlohmann::json json() const = 0;
+};
+
 class HttpHandler {
 public:
 	virtual ~HttpHandler() = default;
-	// @todo #143 В качестве аргумента handle Должен принимать HttpResponse
-	//  Который на другом уровне логики парсится так, как надо.
-	//  И может инкапсулировать в себя ошибку
-	virtual void handle(const nlohmann::json &data) const = 0;
+	virtual void handle(const std::shared_ptr<const HttpResponse> &response) const = 0;
 };
 
 class HttpService {
