@@ -5,6 +5,7 @@
 
 #include "AsioHttpService.h"
 #include <regex>
+#include <asio/steady_timer.hpp>
 #include <asio/streambuf.hpp>
 #include <asio/ts/buffer.hpp>
 #include <asio/ts/socket.hpp>
@@ -55,12 +56,24 @@ public:
 		asio::io_context *context,
 		const string &request,
 		const shared_ptr<const HttpHandler> &handler
-	) : socket(*context), request(request), handler(handler)
+	) : socket(*context), request(request), handler(handler), timer(*context)
 	{
 	}
 
 	void start(const tcp::resolver::results_type &endpoints)
 	{
+		// @todo #140 Время, отведенное на HTTP может варьироваться
+		//  в зависимости от того, какую задачу мы решаем.
+		//  В некоторых случаях требования к срочности не так высоки
+		//  Пока таймаут прописан жестко - 5сек.
+		timer.expires_after(5s);
+		timer.async_wait(
+			bind(
+				&AsioHttpRequest::handle_timeout,
+				shared_from_this(),
+				placeholders::_1
+			)
+		);
 		asio::async_connect(
 			socket,
 			endpoints,
@@ -160,11 +173,20 @@ public:
 		}
 	}
 
+	void handle_timeout(const error_code &error)
+	{
+		if (!error) {
+			socket.close();
+			handler->handle(make_shared<AsioHttpError>("Http io timeout"));
+		}
+	}
+
 private:
 	tcp::socket socket;
 	const string request;
 	const shared_ptr<const HttpHandler> handler;
 	asio::streambuf reply;
+	asio::steady_timer timer;
 };
 
 
