@@ -34,7 +34,7 @@ public:
 	{
 	}
 
-	AsioHttpError(const string &message)
+	explicit AsioHttpError(const string &message)
 		: AsioHttpError({}, message)
 	{
 	}
