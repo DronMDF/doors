@@ -27,6 +27,28 @@ private:
 	const string body;
 };
 
+class AsioHttpError final : public HttpResponse {
+public:
+	AsioHttpError(const error_code &error, const string &message)
+		: error(error), message(message)
+	{
+	}
+
+	AsioHttpError(const string &message)
+		: AsioHttpError({}, message)
+	{
+	}
+
+	nlohmann::json json() const override
+	{
+		throw system_error(error, message);
+	}
+
+private:
+	const error_code error;
+	const string message;
+};
+
 class AsioHttpRequest final : public enable_shared_from_this<AsioHttpRequest> {
 public:
 	AsioHttpRequest(
@@ -53,66 +75,31 @@ public:
 	void handle_connect(const error_code &error)
 	{
 		if (error) {
-			throw runtime_error("Unable to connect HttpAsyncConnect");
+			handler->handle(make_shared<AsioHttpError>(error, "Http connect failed"));
+		} else {
+			asio::async_write(
+				socket,
+				asio::buffer(request),
+				bind(
+					&AsioHttpRequest::handle_write,
+					shared_from_this(),
+					placeholders::_1
+				)
+			);
 		}
-
-		asio::async_write(
-			socket,
-			asio::buffer(request),
-			bind(
-				&AsioHttpRequest::handle_write,
-				shared_from_this(),
-				placeholders::_1
-			)
-		);
 	}
 
 	void handle_write(const error_code &error)
 	{
 		if (error) {
-			throw runtime_error("Unable to write data in HttpAsyncConnect");
-		}
-
-		asio::async_read_until(
-			socket,
-			reply,
-			"\r\n\r\n",
-			bind(
-				&AsioHttpRequest::handle_header,
-				shared_from_this(),
-				placeholders::_1,
-				placeholders::_2
-			)
-		);
-	}
-
-	void handle_header(const error_code &error, size_t bytes)
-	{
-		if (error) {
-			throw runtime_error("Unable to read header in HttpAsyncConnect");
-		}
-		const string hdr(
-			asio::buffers_begin(reply.data()),
-			asio::buffers_begin(reply.data()) + bytes
-		);
-		reply.consume(bytes);
-
-		smatch m;
-		if (!regex_search(hdr, m, regex(R"(Content-Length: (\d+))"))) {
-			throw runtime_error("Wrong response header in HttpAsyncRequestStorage");
-		}
-
-		const size_t body_size = stoi(m[1]);
-
-		if (reply.size() >= body_size) {
-			handle_body({}, body_size);
+			handler->handle(make_shared<AsioHttpError>(error, "Http write failed"));
 		} else {
-			asio::async_read(
+			asio::async_read_until(
 				socket,
 				reply,
-				asio::transfer_at_least(body_size),
+				"\r\n\r\n",
 				bind(
-					&AsioHttpRequest::handle_body,
+					&AsioHttpRequest::handle_header,
 					shared_from_this(),
 					placeholders::_1,
 					placeholders::_2
@@ -121,18 +108,56 @@ public:
 		}
 	}
 
+	void handle_header(const error_code &error, size_t bytes)
+	{
+		if (error) {
+			handler->handle(
+				make_shared<AsioHttpError>(error, "Http read header failed")
+			);
+		} else {
+			const string hdr(
+				asio::buffers_begin(reply.data()),
+				asio::buffers_begin(reply.data()) + bytes
+			);
+			reply.consume(bytes);
+
+			smatch m;
+			if (regex_search(hdr, m, regex(R"(Content-Length: (\d+))"))) {
+				const size_t body_size = stoi(m[1]);
+
+				if (reply.size() >= body_size) {
+					handle_body({}, body_size);
+				} else {
+					asio::async_read(
+						socket,
+						reply,
+						asio::transfer_at_least(body_size),
+						bind(
+							&AsioHttpRequest::handle_body,
+							shared_from_this(),
+							placeholders::_1,
+							placeholders::_2
+						)
+					);
+				}
+			} else {
+				handler->handle(make_shared<AsioHttpError>("Wrong Http header"));
+			}
+		}
+	}
+
 	void handle_body(const error_code &error, size_t bytes)
 	{
 		if (error) {
-			throw runtime_error("Unable to read header in HttpAsyncConnect");
+			handler->handle(make_shared<AsioHttpError>(error, "Http read body failed"));
+		} else {
+			const string body(
+				asio::buffers_begin(reply.data()),
+				asio::buffers_begin(reply.data()) + bytes
+			);
+
+			handler->handle(make_shared<AsioHttpResponse>(body));
 		}
-
-		const string body(
-			asio::buffers_begin(reply.data()),
-			asio::buffers_begin(reply.data()) + bytes
-		);
-
-		handler->handle(make_shared<AsioHttpResponse>(body));
 	}
 
 private:
