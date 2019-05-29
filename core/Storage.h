@@ -6,12 +6,16 @@
 #pragma once
 #include <nlohmann/json.hpp>
 
+class StorageResponse {
+public:
+	virtual ~StorageResponse() = default;
+	virtual nlohmann::json json() const = 0;
+};
+
 class StorageHandler {
 public:
 	virtual ~StorageHandler() = default;
-	// @todo #85 Должен ли handler принимать еще код ошибки?
-	//  Что делать, если storage не в состоянии предоставить результат?
-	virtual void handle(const nlohmann::json &data) const = 0;
+	virtual void handle(const std::shared_ptr<const StorageResponse> &response) const = 0;
 };
 
 class Storage {

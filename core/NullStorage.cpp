@@ -7,12 +7,20 @@
 
 using namespace std;
 
+class NullStorageResponse final : public StorageResponse {
+public:
+	nlohmann::json json() const override
+	{
+		return {};
+	}
+};
+
 void NullStorage::query(
 	const string &query [[gnu::unused]],
 	const shared_ptr<const StorageHandler> &handler
 ) const
 {
-	handler->handle(nlohmann::json::object());
+	handler->handle(make_shared<NullStorageResponse>());
 }
 
 void NullStorage::update(

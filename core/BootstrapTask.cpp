@@ -20,8 +20,9 @@ public:
 	{
 	}
 
-	void handle(const nlohmann::json &data) const override
+	void handle(const shared_ptr<const StorageResponse> &response) const override
 	{
+		const auto data = response->json();
 		for (const auto &c : data["controllers"]) {
 			scheduler->schedule(
 				make_shared<InventoryTask>(
