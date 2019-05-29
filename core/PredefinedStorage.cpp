@@ -7,6 +7,23 @@
 
 using namespace std;
 
+// @todo #101 Вместо PredefinedStorageResponse класса
+//  можно было бы использовать JsonStorageResponse, если бы у нас такой был.
+class PredefinedStorageResponse final : public StorageResponse {
+public:
+	explicit PredefinedStorageResponse(const nlohmann::json &data)
+		: data(data)
+	{
+	}
+
+	nlohmann::json json() const override
+	{
+		return data;
+	}
+private:
+	const nlohmann::json data;
+};
+
 PredefinedStorage::PredefinedStorage(const map<string, nlohmann::json> &info)
 	: info(info)
 {
@@ -22,7 +39,7 @@ void PredefinedStorage::query(
 	const shared_ptr<const StorageHandler> &handler
 ) const
 {
-	handler->handle(info.at(query));
+	handler->handle(make_shared<PredefinedStorageResponse>(info.at(query)));
 }
 
 void PredefinedStorage::update(

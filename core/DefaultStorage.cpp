@@ -7,6 +7,30 @@
 
 using namespace std;
 
+class DefaultStorageResponse final : public StorageResponse {
+public:
+	DefaultStorageResponse(
+		const shared_ptr<const StorageResponse> &response,
+		const nlohmann::json &data
+	) : response(response), data(data)
+	{
+	}
+
+	nlohmann::json json() const override
+	{
+		try {
+			auto rv = data;
+			rv.merge_patch(response->json());
+			return rv;
+		} catch (const exception &) {
+			return data;
+		}
+	}
+private:
+	const shared_ptr<const StorageResponse> response;
+	const nlohmann::json data;
+};
+
 class DefaultStorageHandler final : public StorageHandler {
 public:
 	DefaultStorageHandler(
@@ -16,11 +40,9 @@ public:
 	{
 	}
 
-	void handle(const nlohmann::json &result) const override
+	void handle(const shared_ptr<const StorageResponse> &response) const override
 	{
-		auto rv = data;
-		rv.merge_patch(result);
-		handler->handle(rv);
+		handler->handle(make_shared<DefaultStorageResponse>(response, data));
 	}
 private:
 	const shared_ptr<const StorageHandler> handler;

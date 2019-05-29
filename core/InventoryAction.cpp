@@ -22,9 +22,9 @@ public:
 	{
 	}
 
-	void handle(const nlohmann::json &data) const override
+	void handle(const shared_ptr<const StorageResponse> &response) const override
 	{
-		const auto locks = data["locks"];
+		const auto locks = response->json()["locks"];
 
 		ChainBytes reply(
 			make_shared<InventoryBytes>(be32toh(req.id)),

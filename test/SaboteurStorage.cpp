@@ -7,12 +7,20 @@
 
 using namespace std;
 
+class SaboteurStorageResponse final : public StorageResponse {
+public:
+	nlohmann::json json() const override
+	{
+		throw runtime_error("Sabotage");
+	}
+};
+
 void SaboteurStorage::query(
 	const string &query,
 	const shared_ptr<const StorageHandler> &handler
 ) const
 {
-	handler->handle(nlohmann::json::object());
+	handler->handle(make_shared<SaboteurStorageResponse>());
 }
 
 void SaboteurStorage::update(const string &query, const nlohmann::json &data)

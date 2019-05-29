@@ -11,6 +11,21 @@
 using namespace std;
 using asio::ip::tcp;
 
+class HttpStorageResponse final : public StorageResponse {
+public:
+	explicit HttpStorageResponse(const shared_ptr<const HttpResponse> &response)
+		: response(response)
+	{
+	}
+
+	nlohmann::json json() const override
+	{
+		return response->json();
+	}
+private:
+	const shared_ptr<const HttpResponse> response;
+};
+
 class HttpStorageHandler final : public HttpHandler {
 public:
 	explicit HttpStorageHandler(const shared_ptr<const StorageHandler> &handler)
@@ -20,7 +35,7 @@ public:
 
 	void handle(const shared_ptr<const HttpResponse> &response) const override
 	{
-		handler->handle(response->json());
+		handler->handle(make_shared<HttpStorageResponse>(response));
 	}
 private:
 	const shared_ptr<const StorageHandler> handler;
@@ -28,7 +43,9 @@ private:
 
 class NullStorageHandler final : public StorageHandler {
 public:
-	void handle(const nlohmann::json &data [[gnu::unused]]) const override
+	void handle(
+		const shared_ptr<const StorageResponse> &response [[gnu::unused]]
+	) const override
 	{
 	}
 };

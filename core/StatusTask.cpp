@@ -23,8 +23,9 @@ public:
 	{
 	}
 
-	void handle(const nlohmann::json &data) const override
+	void handle(const shared_ptr<const StorageResponse> &response) const override
 	{
+		const auto data = response->json();
 		vector<uint32_t> locks;
 		for (const auto &l : data["locks"]) {
 			locks.push_back(l.get<uint32_t>());
