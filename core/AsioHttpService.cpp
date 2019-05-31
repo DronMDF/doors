@@ -169,6 +169,10 @@ public:
 				asio::buffers_begin(reply.data()) + bytes
 			);
 
+			// @todo #151 В случае успешного приема респонза
+			//  необходимо остановить таймер, срабатывает
+			//  Из за этого дыважды срабатывает хандлер и
+			//  и задваивается ретрансмит
 			handler->handle(make_shared<AsioHttpResponse>(body));
 		}
 	}
