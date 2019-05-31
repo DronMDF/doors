@@ -44,6 +44,7 @@ ADD_LIBRARY(
 	NetIoService.cpp
 	OkBytes.cpp
 	PredefinedStorage.cpp
+	RetryStorage.cpp
 	RawBytes.cpp
 	StatusAction.cpp
 	StatusTask.cpp
