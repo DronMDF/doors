@@ -88,6 +88,7 @@ public:
 	void handle_connect(const error_code &error)
 	{
 		if (error) {
+			timer.cancel();
 			handler->handle(make_shared<AsioHttpError>(error, "Http connect failed"));
 		} else {
 			asio::async_write(
@@ -105,6 +106,7 @@ public:
 	void handle_write(const error_code &error)
 	{
 		if (error) {
+			timer.cancel();
 			handler->handle(make_shared<AsioHttpError>(error, "Http write failed"));
 		} else {
 			asio::async_read_until(
@@ -124,6 +126,7 @@ public:
 	void handle_header(const error_code &error, size_t bytes)
 	{
 		if (error) {
+			timer.cancel();
 			handler->handle(
 				make_shared<AsioHttpError>(error, "Http read header failed")
 			);
@@ -154,6 +157,7 @@ public:
 					);
 				}
 			} else {
+				timer.cancel();
 				handler->handle(make_shared<AsioHttpError>("Wrong Http header"));
 			}
 		}
@@ -162,17 +166,14 @@ public:
 	void handle_body(const error_code &error, size_t bytes)
 	{
 		if (error) {
+			timer.cancel();
 			handler->handle(make_shared<AsioHttpError>(error, "Http read body failed"));
 		} else {
+			timer.cancel();
 			const string body(
 				asio::buffers_begin(reply.data()),
 				asio::buffers_begin(reply.data()) + bytes
 			);
-
-			// @todo #151 В случае успешного приема респонза
-			//  необходимо остановить таймер, срабатывает
-			//  Из за этого дыважды срабатывает хандлер и
-			//  и задваивается ретрансмит
 			handler->handle(make_shared<AsioHttpResponse>(body));
 		}
 	}
