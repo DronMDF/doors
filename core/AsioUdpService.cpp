@@ -122,6 +122,7 @@ public:
 			handler->handle(make_shared<AsioUdpError>("Udp timeout"));
 		}
 	}
+
 private:
 	const shared_ptr<udp::socket> socket;
 	udp::endpoint endpoint;
