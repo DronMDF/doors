@@ -35,6 +35,9 @@ int main(int argc, char **argv)
 
 		asio::io_context io_context;
 
+		// @todo #139 Необходимо обеспечить повторные попытки получения информации
+		//  через UdpService. Технически эти попытки должны быть ограничены.
+		//  Но в эту сторону я еще не думал.
 		const auto service = make_shared<AsioUdpService>(&io_context);
 		const auto scheduler = make_shared<AsioScheduler>(&io_context);
 		const auto storage = make_shared<HttpStorage>(

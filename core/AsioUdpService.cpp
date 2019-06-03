@@ -41,16 +41,36 @@ private:
 
 class AsioUdpRequest final : public enable_shared_from_this<AsioUdpRequest> {
 public:
+	// @todo #139 Создание сокета необходимо перенести в AsioUdpRequest
 	AsioUdpRequest(
+		asio::io_context *context,
 		const shared_ptr<udp::socket> &socket,
 		const udp::endpoint &endpoint,
 		const vector<uint8_t> &request,
 		const shared_ptr<const UdpHandler> &handler
-	) : socket(socket), endpoint(endpoint), request(request), handler(handler), reply(1024)
+	) : socket(socket),
+	    endpoint(endpoint),
+	    request(request),
+	    handler(handler),
+	    reply(1024),
+	    timer(*context)
 	{
 	}
 
-	void start() {
+	void start()
+	{
+		// @todo #139 Время, отведенное на UDP может варьироваться
+		//  в зависимости от того, какую задачу мы решаем.
+		//  В некоторых случаях требования к срочности не так высоки
+		//  Пока таймаут прописан жестко - 5сек.
+		timer.expires_after(5s);
+		timer.async_wait(
+			bind(
+				&AsioUdpRequest::handle_timeout,
+				shared_from_this(),
+				placeholders::_1
+			)
+		);
 		socket->async_send_to(
 			asio::buffer(request),
 			endpoint,
@@ -63,7 +83,8 @@ public:
 		);
 	}
 
-	void handle_send(error_code ec, size_t size [[gnu::unused]]) {
+	void handle_send(error_code ec, size_t size [[gnu::unused]])
+	{
 		if (!ec) {
 			// @todo #71 endpoint в данном контексте определяется при приходе пакета
 			//  Но мы работаем с конкретным, и не должны принимать пакеты от других.
@@ -79,24 +100,35 @@ public:
 				)
 			);
 		} else {
-			cout << "UDP send error" << endl;
+			timer.cancel();
+			handler->handle(make_shared<AsioUdpError>(ec, "UDP send error"));
 		}
 	}
 
-	void handle_recv(error_code ec, size_t size) const {
+	void handle_recv(error_code ec, size_t size)
+	{
+		timer.cancel();
 		if (!ec) {
 			handler->handle(make_shared<RawBytes>(&reply[0], size));
 		} else {
-			cout << "UDP recv error" << endl;
+			handler->handle(make_shared<AsioUdpError>(ec, "UDP recv error"));
 		}
 	}
 
+	void handle_timeout(const error_code &ec)
+	{
+		if (!ec) {
+			socket->close();
+			handler->handle(make_shared<AsioUdpError>("Udp timeout"));
+		}
+	}
 private:
 	const shared_ptr<udp::socket> socket;
 	udp::endpoint endpoint;
 	const vector<uint8_t> request;
 	const shared_ptr<const UdpHandler> handler;
 	vector<uint8_t> reply;
+	asio::steady_timer timer;
 };
 
 AsioUdpService::AsioUdpService(asio::io_context *context)
@@ -120,5 +152,5 @@ void AsioUdpService::request(
 	udp::resolver resolver(*context);
 	const auto endpoint = *resolver.resolve(udp::v4(), address, to_string(port)).begin();
 
-	make_shared<AsioUdpRequest>(socket, endpoint, request->raw(), handler)->start();
+	make_shared<AsioUdpRequest>(context, socket, endpoint, request->raw(), handler)->start();
 }
