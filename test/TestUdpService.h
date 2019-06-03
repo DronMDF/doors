@@ -6,9 +6,9 @@
 #pragma once
 #include <core/UdpService.h>
 
-class TestIoService final : public UdpService {
+class TestUdpService final : public UdpService {
 public:
-	explicit TestIoService(const std::shared_ptr<const Bytes> &response);
+	explicit TestUdpService(const std::shared_ptr<const Bytes> &response);
 
 	void request(
 		const std::string &address,

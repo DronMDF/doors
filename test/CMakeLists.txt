@@ -23,7 +23,7 @@ ADD_EXECUTABLE(
 	SaboteurStorage.cpp
 	StatusActionTest.cpp
 	TestAction.cpp
-	TestIoService.cpp
+	TestUdpService.cpp
 	TestSocket.cpp
 )
 

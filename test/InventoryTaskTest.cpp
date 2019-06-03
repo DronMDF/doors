@@ -9,7 +9,7 @@
 #include <core/List32Bytes.h>
 #include <core/InventoryTask.h>
 #include "LogStorage.h"
-#include "TestIoService.h"
+#include "TestUdpService.h"
 
 using namespace std;
 using namespace oout;
@@ -39,7 +39,7 @@ InventoryTaskTest::InventoryTaskTest()
 				"InventoryTask update controller by id",
 				make_shared<TestStartsWith>(
 					make_shared<InventoryUpdateRepr>(
-						make_shared<TestIoService>(
+						make_shared<TestUdpService>(
 							make_shared<ChainBytes>(
 								make_shared<InventoryBytes>(10),
 								make_shared<List32Bytes>()
