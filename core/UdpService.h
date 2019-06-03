@@ -9,7 +9,13 @@
 #include <netinet/in.h>
 
 class Bytes;
-class UdpHandler;
+
+class UdpHandler {
+public:
+	virtual ~UdpHandler() = default;
+
+	virtual void handle(const std::shared_ptr<const Bytes> &reply) const = 0;
+};
 
 // @todo #116 Операции ввода-вывода можно трассировать написав декоратор на IoService
 //  И на Storage тоже...

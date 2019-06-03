@@ -9,7 +9,6 @@
 #include <core/BytesOk.h>
 #include <core/LockBytes.h>
 #include <core/Scheduler.h>
-#include <core/UdpHandler.h>
 #include <core/UdpService.h>
 #include "UnlockTask.h"
 

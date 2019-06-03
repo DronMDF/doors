@@ -9,7 +9,6 @@
 #include "BytesInventory.h"
 #include "InventoryReqBytes.h"
 #include "Storage.h"
-#include "UdpHandler.h"
 #include "UdpService.h"
 
 using namespace std;

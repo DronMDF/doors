@@ -12,7 +12,6 @@
 #include <asio/ts/socket.hpp>
 #include "RawBytes.h"
 #include "Storage.h"
-#include "UdpHandler.h"
 
 using namespace std;
 using asio::ip::udp;
