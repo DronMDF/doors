@@ -17,9 +17,31 @@ using namespace std;
 using asio::ip::udp;
 using asio::ip::tcp;
 
-class UdpAsyncRequest final : public enable_shared_from_this<UdpAsyncRequest> {
+class AsioUdpError final : public Bytes {
 public:
-	UdpAsyncRequest(
+	AsioUdpError(const error_code &error, const string &message)
+		: error(error), message(message)
+	{
+	}
+
+	explicit AsioUdpError(const string &message)
+		: AsioUdpError({}, message)
+	{
+	}
+
+	vector<uint8_t> raw() const override
+	{
+		throw system_error(error, message);
+	}
+
+private:
+	const error_code error;
+	const string message;
+};
+
+class AsioUdpRequest final : public enable_shared_from_this<AsioUdpRequest> {
+public:
+	AsioUdpRequest(
 		const shared_ptr<udp::socket> &socket,
 		const udp::endpoint &endpoint,
 		const vector<uint8_t> &request,
@@ -33,7 +55,7 @@ public:
 			asio::buffer(request),
 			endpoint,
 			bind(
-				&UdpAsyncRequest::handle_send,
+				&AsioUdpRequest::handle_send,
 				shared_from_this(),
 				placeholders::_1,
 				placeholders::_2
@@ -50,7 +72,7 @@ public:
 				asio::buffer(reply),
 				endpoint,
 				bind(
-					&UdpAsyncRequest::handle_recv,
+					&AsioUdpRequest::handle_recv,
 					shared_from_this(),
 					placeholders::_1,
 					placeholders::_2
@@ -98,5 +120,5 @@ void AsioUdpService::request(
 	udp::resolver resolver(*context);
 	const auto endpoint = *resolver.resolve(udp::v4(), address, to_string(port)).begin();
 
-	make_shared<UdpAsyncRequest>(socket, endpoint, request->raw(), handler)->start();
+	make_shared<AsioUdpRequest>(socket, endpoint, request->raw(), handler)->start();
 }
