@@ -3,7 +3,7 @@
 // This software may be modified and distributed under the terms
 // of the MIT license.  See the LICENSE file for details.
 
-#include "NetIoService.h"
+#include "AsioUdpService.h"
 #include <functional>
 #include <iostream>
 #include <regex>
@@ -12,29 +12,70 @@
 #include <asio/ts/socket.hpp>
 #include "RawBytes.h"
 #include "Storage.h"
-#include "UdpHandler.h"
 
 using namespace std;
 using asio::ip::udp;
 using asio::ip::tcp;
 
-class UdpAsyncRequest final : public enable_shared_from_this<UdpAsyncRequest> {
+class AsioUdpError final : public Bytes {
 public:
-	UdpAsyncRequest(
+	AsioUdpError(const error_code &error, const string &message)
+		: error(error), message(message)
+	{
+	}
+
+	explicit AsioUdpError(const string &message)
+		: AsioUdpError({}, message)
+	{
+	}
+
+	vector<uint8_t> raw() const override
+	{
+		throw system_error(error, message);
+	}
+
+private:
+	const error_code error;
+	const string message;
+};
+
+class AsioUdpRequest final : public enable_shared_from_this<AsioUdpRequest> {
+public:
+	// @todo #139 Создание сокета необходимо перенести в AsioUdpRequest
+	AsioUdpRequest(
+		asio::io_context *context,
 		const shared_ptr<udp::socket> &socket,
 		const udp::endpoint &endpoint,
 		const vector<uint8_t> &request,
 		const shared_ptr<const UdpHandler> &handler
-	) : socket(socket), endpoint(endpoint), request(request), handler(handler), reply(1024)
+	) : socket(socket),
+	    endpoint(endpoint),
+	    request(request),
+	    handler(handler),
+	    reply(1024),
+	    timer(*context)
 	{
 	}
 
-	void start() {
+	void start()
+	{
+		// @todo #139 Время, отведенное на UDP может варьироваться
+		//  в зависимости от того, какую задачу мы решаем.
+		//  В некоторых случаях требования к срочности не так высоки
+		//  Пока таймаут прописан жестко - 5сек.
+		timer.expires_after(5s);
+		timer.async_wait(
+			bind(
+				&AsioUdpRequest::handle_timeout,
+				shared_from_this(),
+				placeholders::_1
+			)
+		);
 		socket->async_send_to(
 			asio::buffer(request),
 			endpoint,
 			bind(
-				&UdpAsyncRequest::handle_send,
+				&AsioUdpRequest::handle_send,
 				shared_from_this(),
 				placeholders::_1,
 				placeholders::_2
@@ -42,7 +83,8 @@ public:
 		);
 	}
 
-	void handle_send(error_code ec, size_t size [[gnu::unused]]) {
+	void handle_send(error_code ec, size_t size [[gnu::unused]])
+	{
 		if (!ec) {
 			// @todo #71 endpoint в данном контексте определяется при приходе пакета
 			//  Но мы работаем с конкретным, и не должны принимать пакеты от других.
@@ -51,22 +93,33 @@ public:
 				asio::buffer(reply),
 				endpoint,
 				bind(
-					&UdpAsyncRequest::handle_recv,
+					&AsioUdpRequest::handle_recv,
 					shared_from_this(),
 					placeholders::_1,
 					placeholders::_2
 				)
 			);
 		} else {
-			cout << "UDP send error" << endl;
+			timer.cancel();
+			handler->handle(make_shared<AsioUdpError>(ec, "UDP send error"));
 		}
 	}
 
-	void handle_recv(error_code ec, size_t size) const {
+	void handle_recv(error_code ec, size_t size)
+	{
+		timer.cancel();
 		if (!ec) {
 			handler->handle(make_shared<RawBytes>(&reply[0], size));
 		} else {
-			cout << "UDP recv error" << endl;
+			handler->handle(make_shared<AsioUdpError>(ec, "UDP recv error"));
+		}
+	}
+
+	void handle_timeout(const error_code &ec)
+	{
+		if (!ec) {
+			socket->close();
+			handler->handle(make_shared<AsioUdpError>("Udp timeout"));
 		}
 	}
 
@@ -76,14 +129,15 @@ private:
 	const vector<uint8_t> request;
 	const shared_ptr<const UdpHandler> handler;
 	vector<uint8_t> reply;
+	asio::steady_timer timer;
 };
 
-NetIoService::NetIoService(asio::io_context *context)
+AsioUdpService::AsioUdpService(asio::io_context *context)
 	: context(context)
 {
 }
 
-void NetIoService::async_udp_request(
+void AsioUdpService::request(
 	const string &address,
 	in_port_t port,
 	const shared_ptr<const Bytes> &request,
@@ -99,5 +153,5 @@ void NetIoService::async_udp_request(
 	udp::resolver resolver(*context);
 	const auto endpoint = *resolver.resolve(udp::v4(), address, to_string(port)).begin();
 
-	make_shared<UdpAsyncRequest>(socket, endpoint, request->raw(), handler)->start();
+	make_shared<AsioUdpRequest>(context, socket, endpoint, request->raw(), handler)->start();
 }

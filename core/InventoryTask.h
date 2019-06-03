@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 #include "Task.h"
 
-class IoService;
+class UdpService;
 class Storage;
 
 class InventoryTask final : public Task {
@@ -17,7 +17,7 @@ public:
 		const std::string &address,
 		in_port_t port,
 		const std::shared_ptr<Storage> &storage,
-		const std::shared_ptr<IoService> &service
+		const std::shared_ptr<UdpService> &service
 	);
 
 	void run() const override;
@@ -26,5 +26,5 @@ private:
 	const std::string address;
 	const in_port_t port;
 	const std::shared_ptr<Storage> storage;
-	const std::shared_ptr<IoService> service;
+	const std::shared_ptr<UdpService> service;
 };

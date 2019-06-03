@@ -7,9 +7,8 @@
 #include <iostream>
 #include <core/Bytes.h>
 #include <core/BytesOk.h>
-#include <core/IoService.h>
 #include <core/Scheduler.h>
-#include <core/UdpHandler.h>
+#include <core/UdpService.h>
 #include <core/UnlockBytes.h>
 #include "LockTask.h"
 
@@ -45,7 +44,7 @@ UnlockTask::UnlockTask(
 	int lock_id,
 	const string &address,
 	in_port_t port,
-	const shared_ptr<IoService> &service,
+	const shared_ptr<UdpService> &service,
 	const shared_ptr<Scheduler> &scheduler
 ) : lock_id(lock_id), address(address), port(port), service(service), scheduler(scheduler)
 {
@@ -53,7 +52,7 @@ UnlockTask::UnlockTask(
 
 void UnlockTask::run() const
 {
-	service->async_udp_request(
+	service->request(
 		address,
 		port,
 		make_shared<UnlockBytes>(0, lock_id, 0x123456789ABCDEF),

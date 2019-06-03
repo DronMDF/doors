@@ -14,7 +14,7 @@
 #include <core/HttpStorage.h>
 #include <core/Listener.h>
 #include <core/LockAction.h>
-#include <core/NetIoService.h>
+#include <core/AsioUdpService.h>
 #include <core/RetryStorage.h>
 #include <core/StatusAction.h>
 #include <core/TracedAction.h>
@@ -35,7 +35,10 @@ int main(int argc, char **argv)
 
 		asio::io_context io_context;
 
-		const auto service = make_shared<NetIoService>(&io_context);
+		// @todo #139 Необходимо обеспечить повторные попытки получения информации
+		//  через UdpService. Технически эти попытки должны быть ограничены.
+		//  Но в эту сторону я еще не думал.
+		const auto service = make_shared<AsioUdpService>(&io_context);
 		const auto scheduler = make_shared<AsioScheduler>(&io_context);
 		const auto storage = make_shared<HttpStorage>(
 			args::get(uri),

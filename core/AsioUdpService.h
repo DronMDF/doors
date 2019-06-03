@@ -4,18 +4,19 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
-#include <core/IoService.h>
+#include "UdpService.h"
+#include <asio/ts/internet.hpp>
 
-class LogIoService final : public IoService {
+class AsioUdpService final : public UdpService {
 public:
-	void async_udp_request(
+	explicit AsioUdpService(asio::io_context *context);
+
+	void request(
 		const std::string &address,
 		in_port_t port,
 		const std::shared_ptr<const Bytes> &request,
 		const std::shared_ptr<const UdpHandler> &handler
 	) const override;
-
-	std::string asString() const;
 private:
-	mutable std::string log;
+	asio::io_context *context;
 };

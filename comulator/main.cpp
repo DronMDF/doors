@@ -12,7 +12,7 @@
 #include <core/DispatchedAction.h>
 #include <core/InventoryAction.h>
 #include <core/Listener.h>
-#include <core/NetIoService.h>
+#include <core/AsioUdpService.h>
 #include <core/PredefinedStorage.h>
 #include <core/TracedAction.h>
 #include "LockTask.h"
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 		vector<int> locks = {1, 2, 4, 5, 6, 7, 8, 9, 10, 15};
 
 		asio::io_context io_context;
-		const auto service = make_shared<NetIoService>(&io_context);
+		const auto service = make_shared<AsioUdpService>(&io_context);
 		const auto scheduler = make_shared<AsioScheduler>(&io_context);
 
 		for (const auto &l : locks) {

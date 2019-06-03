@@ -6,7 +6,7 @@
 #pragma once
 #include "Task.h"
 
-class IoService;
+class UdpService;
 class Scheduler;
 class Storage;
 
@@ -15,11 +15,11 @@ public:
 	BootstrapTask(
 		const std::shared_ptr<Storage> &storage,
 		const std::shared_ptr<Scheduler> &scheduler,
-		const std::shared_ptr<IoService> &service
+		const std::shared_ptr<UdpService> &service
 	);
 	void run() const override;
 private:
 	const std::shared_ptr<Storage> storage;
 	const std::shared_ptr<Scheduler> scheduler;
-	const std::shared_ptr<IoService> service;
+	const std::shared_ptr<UdpService> service;
 };

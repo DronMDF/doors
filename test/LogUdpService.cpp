@@ -3,13 +3,13 @@
 // This software may be modified and distributed under the terms
 // of the MIT license.  See the LICENSE file for details.
 
-#include "LogIoService.h"
+#include "LogUdpService.h"
 #include <fmt/format.h>
 #include <core/Bytes.h>
 
 using namespace std;
 
-void LogIoService::async_udp_request(
+void LogUdpService::request(
 	const string &address,
 	in_port_t port,
 	const shared_ptr<const Bytes> &request,
@@ -23,7 +23,7 @@ void LogIoService::async_udp_request(
 	log += "\n";
 }
 
-string LogIoService::asString() const
+string LogUdpService::asString() const
 {
 	return log;
 }

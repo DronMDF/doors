@@ -7,10 +7,9 @@
 #include <iostream>
 #include <core/Bytes.h>
 #include <core/BytesOk.h>
-#include <core/IoService.h>
 #include <core/LockBytes.h>
 #include <core/Scheduler.h>
-#include <core/UdpHandler.h>
+#include <core/UdpService.h>
 #include "UnlockTask.h"
 
 using namespace std;
@@ -51,7 +50,7 @@ LockTask::LockTask(
 	int lock_id,
 	const string &address,
 	in_port_t port,
-	const shared_ptr<IoService> &service,
+	const shared_ptr<UdpService> &service,
 	const shared_ptr<Scheduler> &scheduler
 ) : lock_id(lock_id), address(address), port(port), service(service), scheduler(scheduler)
 {
@@ -64,7 +63,7 @@ void LockTask::run() const
 	//  Вероятно мы можем сделать базовый udp_io, и навешивать на него адрес endpoint,
 	//  чтобы минимизировать количество параметров в данных классах
 	//  И если говорим про запросы - этот сокет можно заранее открыть и всегда пользоваться им.
-	service->async_udp_request(
+	service->request(
 		address,
 		port,
 		make_shared<LockBytes>(0, lock_id, 0x123456789ABCDEF),

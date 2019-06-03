@@ -3,17 +3,16 @@
 // This software may be modified and distributed under the terms
 // of the MIT license.  See the LICENSE file for details.
 
-#include "TestIoService.h"
-#include <core/UdpHandler.h>
+#include "TestUdpService.h"
 
 using namespace std;
 
-TestIoService::TestIoService(const shared_ptr<const Bytes> &response)
+TestUdpService::TestUdpService(const shared_ptr<const Bytes> &response)
 	: response(response)
 {
 }
 
-void TestIoService::async_udp_request(
+void TestUdpService::request(
 	const string &address [[gnu::unused]],
 	in_port_t port [[gnu::unused]],
 	const shared_ptr<const Bytes> &request [[gnu::unused]],

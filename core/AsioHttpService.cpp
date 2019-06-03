@@ -208,7 +208,7 @@ void AsioHttpService::request(
 {
 	smatch m;
 	if (!regex_match(uri, m, regex(R"(http://([\w\.]+):(\d+))"))) {
-		throw runtime_error("Wrong uri in NetIoService");
+		throw runtime_error("Wrong uri in AsioUdpService");
 	}
 
 	tcp::socket s(*context);

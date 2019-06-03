@@ -4,13 +4,13 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
-#include <core/IoService.h>
+#include <core/UdpService.h>
 
-class TestIoService final : public IoService {
+class TestUdpService final : public UdpService {
 public:
-	explicit TestIoService(const std::shared_ptr<const Bytes> &response);
+	explicit TestUdpService(const std::shared_ptr<const Bytes> &response);
 
-	void async_udp_request(
+	void request(
 		const std::string &address,
 		in_port_t port,
 		const std::shared_ptr<const Bytes> &request,
