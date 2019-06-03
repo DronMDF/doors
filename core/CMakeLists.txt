@@ -41,7 +41,7 @@ ADD_LIBRARY(
 	LockAction.cpp
 	LockBytes.cpp
 	NullStorage.cpp
-	NetIoService.cpp
+	AsioUdpService.cpp
 	OkBytes.cpp
 	PredefinedStorage.cpp
 	RetryStorage.cpp

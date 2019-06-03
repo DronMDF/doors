@@ -7,9 +7,9 @@
 #include "UdpService.h"
 #include <asio/ts/internet.hpp>
 
-class NetIoService final : public UdpService {
+class AsioUdpService final : public UdpService {
 public:
-	explicit NetIoService(asio::io_context *context);
+	explicit AsioUdpService(asio::io_context *context);
 
 	void request(
 		const std::string &address,
