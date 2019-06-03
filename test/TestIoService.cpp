@@ -13,7 +13,7 @@ TestIoService::TestIoService(const shared_ptr<const Bytes> &response)
 {
 }
 
-void TestIoService::async_udp_request(
+void TestIoService::request(
 	const string &address [[gnu::unused]],
 	in_port_t port [[gnu::unused]],
 	const shared_ptr<const Bytes> &request [[gnu::unused]],

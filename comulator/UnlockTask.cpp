@@ -53,7 +53,7 @@ UnlockTask::UnlockTask(
 
 void UnlockTask::run() const
 {
-	service->async_udp_request(
+	service->request(
 		address,
 		port,
 		make_shared<UnlockBytes>(0, lock_id, 0x123456789ABCDEF),

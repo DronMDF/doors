@@ -64,7 +64,7 @@ void LockTask::run() const
 	//  Вероятно мы можем сделать базовый udp_io, и навешивать на него адрес endpoint,
 	//  чтобы минимизировать количество параметров в данных классах
 	//  И если говорим про запросы - этот сокет можно заранее открыть и всегда пользоваться им.
-	service->async_udp_request(
+	service->request(
 		address,
 		port,
 		make_shared<LockBytes>(0, lock_id, 0x123456789ABCDEF),

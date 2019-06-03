@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void LogIoService::async_udp_request(
+void LogIoService::request(
 	const string &address,
 	in_port_t port,
 	const shared_ptr<const Bytes> &request,

@@ -8,7 +8,7 @@
 
 class LogIoService final : public UdpService {
 public:
-	void async_udp_request(
+	void request(
 		const std::string &address,
 		in_port_t port,
 		const std::shared_ptr<const Bytes> &request,

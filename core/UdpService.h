@@ -9,7 +9,6 @@
 #include <netinet/in.h>
 
 class Bytes;
-class StorageHandler;
 class UdpHandler;
 
 // @todo #116 Операции ввода-вывода можно трассировать написав декоратор на IoService
@@ -18,7 +17,7 @@ class UdpService {
 public:
 	virtual ~UdpService() = default;
 
-	virtual void async_udp_request(
+	virtual void request(
 		const std::string &address,
 		in_port_t port,
 		const std::shared_ptr<const Bytes> &request,

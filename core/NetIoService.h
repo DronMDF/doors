@@ -11,7 +11,7 @@ class NetIoService final : public UdpService {
 public:
 	explicit NetIoService(asio::io_context *context);
 
-	void async_udp_request(
+	void request(
 		const std::string &address,
 		in_port_t port,
 		const std::shared_ptr<const Bytes> &request,

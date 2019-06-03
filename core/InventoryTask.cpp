@@ -48,7 +48,7 @@ InventoryTask::InventoryTask(
 
 void InventoryTask::run() const
 {
-	service->async_udp_request(
+	service->request(
 		address,
 		port,
 		make_shared<InventoryReqBytes>(),

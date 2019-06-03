@@ -83,7 +83,7 @@ NetIoService::NetIoService(asio::io_context *context)
 {
 }
 
-void NetIoService::async_udp_request(
+void NetIoService::request(
 	const string &address,
 	in_port_t port,
 	const shared_ptr<const Bytes> &request,

@@ -10,7 +10,7 @@ class TestIoService final : public UdpService {
 public:
 	explicit TestIoService(const std::shared_ptr<const Bytes> &response);
 
-	void async_udp_request(
+	void request(
 		const std::string &address,
 		in_port_t port,
 		const std::shared_ptr<const Bytes> &request,
