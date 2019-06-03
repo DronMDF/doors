@@ -6,7 +6,7 @@
 #pragma once
 #include <core/UdpService.h>
 
-class LogIoService final : public UdpService {
+class LogUdpService final : public UdpService {
 public:
 	void request(
 		const std::string &address,

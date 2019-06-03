@@ -7,7 +7,7 @@
 #include <core/BootstrapTask.h>
 #include <core/ImmediatlyScheduler.h>
 #include <core/PredefinedStorage.h>
-#include "LogIoService.h"
+#include "LogUdpService.h"
 
 using namespace std;
 using namespace oout;
@@ -22,7 +22,7 @@ public:
 
 	string asString() const
 	{
-		auto service = make_shared<LogIoService>();
+		auto service = make_shared<LogUdpService>();
 		BootstrapTask(storage, make_shared<ImmediatlyScheduler>(), service).run();
 		return service->asString();
 	}
