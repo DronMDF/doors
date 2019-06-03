@@ -4,9 +4,9 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
-#include <core/IoService.h>
+#include <core/UdpService.h>
 
-class LogIoService final : public IoService {
+class LogIoService final : public UdpService {
 public:
 	void async_udp_request(
 		const std::string &address,

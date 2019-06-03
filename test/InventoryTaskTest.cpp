@@ -17,7 +17,7 @@ using namespace oout;
 
 class InventoryUpdateRepr final : public oout::Representation {
 public:
-	explicit InventoryUpdateRepr(const shared_ptr<IoService> &service)
+	explicit InventoryUpdateRepr(const shared_ptr<UdpService> &service)
 		: service(service)
 	{
 	}
@@ -29,7 +29,7 @@ public:
 		return storage->asString();
 	}
 private:
-	const shared_ptr<IoService> service;
+	const shared_ptr<UdpService> service;
 };
 
 InventoryTaskTest::InventoryTaskTest()

@@ -14,9 +14,9 @@ class UdpHandler;
 
 // @todo #116 Операции ввода-вывода можно трассировать написав декоратор на IoService
 //  И на Storage тоже...
-class IoService {
+class UdpService {
 public:
-	virtual ~IoService() = default;
+	virtual ~UdpService() = default;
 
 	virtual void async_udp_request(
 		const std::string &address,

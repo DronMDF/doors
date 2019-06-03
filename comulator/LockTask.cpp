@@ -7,10 +7,10 @@
 #include <iostream>
 #include <core/Bytes.h>
 #include <core/BytesOk.h>
-#include <core/IoService.h>
 #include <core/LockBytes.h>
 #include <core/Scheduler.h>
 #include <core/UdpHandler.h>
+#include <core/UdpService.h>
 #include "UnlockTask.h"
 
 using namespace std;
@@ -51,7 +51,7 @@ LockTask::LockTask(
 	int lock_id,
 	const string &address,
 	in_port_t port,
-	const shared_ptr<IoService> &service,
+	const shared_ptr<UdpService> &service,
 	const shared_ptr<Scheduler> &scheduler
 ) : lock_id(lock_id), address(address), port(port), service(service), scheduler(scheduler)
 {

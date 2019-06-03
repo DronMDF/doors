@@ -7,10 +7,10 @@
 #include <asio/ts/internet.hpp>
 #include <fmt/format.h>
 #include "BytesInventory.h"
-#include "IoService.h"
 #include "InventoryReqBytes.h"
 #include "Storage.h"
 #include "UdpHandler.h"
+#include "UdpService.h"
 
 using namespace std;
 using asio::ip::udp;
@@ -18,7 +18,7 @@ using asio::ip::udp;
 class InventoryReplyHandler final : public UdpHandler
 {
 public:
-	InventoryReplyHandler( uint32_t controller_id, const shared_ptr<Storage> &storage)
+	InventoryReplyHandler(uint32_t controller_id, const shared_ptr<Storage> &storage)
 		: controller_id(controller_id), storage(storage)
 	{
 	}
@@ -41,7 +41,7 @@ InventoryTask::InventoryTask(
 	const string &address,
 	in_port_t port,
 	const shared_ptr<Storage> &storage,
-	const shared_ptr<IoService> &service
+	const shared_ptr<UdpService> &service
 ) : controller_id(controller_id), address(address), port(port), storage(storage), service(service)
 {
 }

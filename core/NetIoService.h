@@ -4,10 +4,10 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
-#include "IoService.h"
+#include "UdpService.h"
 #include <asio/ts/internet.hpp>
 
-class NetIoService final : public IoService {
+class NetIoService final : public UdpService {
 public:
 	explicit NetIoService(asio::io_context *context);
 

@@ -13,7 +13,7 @@ using namespace std;
 class BootstrapStorageHandler final : public StorageHandler {
 public:
 	BootstrapStorageHandler(
-		const shared_ptr<IoService> &service,
+		const shared_ptr<UdpService> &service,
 		const shared_ptr<Scheduler> &scheduler,
 		const shared_ptr<Storage> &storage
 	) : service(service), scheduler(scheduler), storage(storage)
@@ -37,7 +37,7 @@ public:
 	}
 
 private:
-	const shared_ptr<IoService> service;
+	const shared_ptr<UdpService> service;
 	const shared_ptr<Scheduler> scheduler;
 	const shared_ptr<Storage> storage;
 };
@@ -45,7 +45,7 @@ private:
 BootstrapTask::BootstrapTask(
 	const shared_ptr<Storage> &storage,
 	const shared_ptr<Scheduler> &scheduler,
-	const shared_ptr<IoService> &service
+	const shared_ptr<UdpService> &service
 ) : storage(storage), scheduler(scheduler), service(service)
 {
 }

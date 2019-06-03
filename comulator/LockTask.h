@@ -7,8 +7,8 @@
 #include <netinet/in.h>
 #include <core/Task.h>
 
-class IoService;
 class Scheduler;
+class UdpService;
 
 class LockTask final : public Task {
 public:
@@ -16,7 +16,7 @@ public:
 		int lock_id,
 		const std::string &address,
 		in_port_t port,
-		const std::shared_ptr<IoService> &service,
+		const std::shared_ptr<UdpService> &service,
 		const std::shared_ptr<Scheduler> &scheduler
 	);
 	void run() const override;
@@ -24,6 +24,6 @@ private:
 	int lock_id;
 	const std::string address;
 	in_port_t port;
-	const std::shared_ptr<IoService> service;
+	const std::shared_ptr<UdpService> service;
 	const std::shared_ptr<Scheduler> scheduler;
 };
