@@ -25,7 +25,7 @@ public:
 	string asString() const
 	{
 		auto storage = make_shared<LogStorage>();
-		InventoryTask(10, "1.1.1.1", 1234, storage, service).run();
+		InventoryTask(10, "1.1.1.1", 1234, storage, service, {}, 0).run();
 		return storage->asString();
 	}
 private:

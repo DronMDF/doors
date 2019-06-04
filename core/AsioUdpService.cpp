@@ -116,6 +116,9 @@ public:
 	void handle_timeout(const error_code &ec)
 	{
 		if (!ec) {
+			// @todo #159 В случае срабатывания таймера AsioUdpRequest
+			//  Сокет закрывается и на handle_recv мы снова получаем ошибку
+			//  handler вызывается дважды. Может быть убрать handler отсюда?
 			socket.close();
 			handler->handle(make_shared<AsioUdpError>("Udp timeout"));
 		}
