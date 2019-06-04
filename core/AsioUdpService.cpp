@@ -5,7 +5,6 @@
 
 #include "AsioUdpService.h"
 #include <functional>
-#include <iostream>
 #include <regex>
 #include <asio/streambuf.hpp>
 #include <asio/ts/buffer.hpp>
@@ -81,7 +80,7 @@ public:
 		);
 	}
 
-	void handle_send(error_code ec, size_t size [[gnu::unused]])
+	void handle_send(const error_code &ec, size_t size [[gnu::unused]])
 	{
 		if (!ec) {
 			// @todo #71 endpoint в данном контексте определяется при приходе пакета
@@ -103,7 +102,7 @@ public:
 		}
 	}
 
-	void handle_recv(error_code ec, size_t size)
+	void handle_recv(const error_code &ec, size_t size)
 	{
 		timer.cancel();
 		if (!ec) {
@@ -116,11 +115,9 @@ public:
 	void handle_timeout(const error_code &ec)
 	{
 		if (!ec) {
-			// @todo #159 В случае срабатывания таймера AsioUdpRequest
-			//  Сокет закрывается и на handle_recv мы снова получаем ошибку
-			//  handler вызывается дважды. Может быть убрать handler отсюда?
+			// После этой операции по сокету пройдет ошибка,
+			// и сессия завершится вызовом хандлера.
 			socket.close();
-			handler->handle(make_shared<AsioUdpError>("Udp timeout"));
 		}
 	}
 
