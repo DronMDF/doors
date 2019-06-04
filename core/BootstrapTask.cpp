@@ -30,7 +30,8 @@ public:
 					c["address"].get<string>(),
 					c["port"].get<in_port_t>(),
 					storage,
-					service
+					service,
+					scheduler
 				)
 			);
 		}
