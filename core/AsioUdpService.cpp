@@ -41,14 +41,12 @@ private:
 
 class AsioUdpRequest final : public enable_shared_from_this<AsioUdpRequest> {
 public:
-	// @todo #139 Создание сокета необходимо перенести в AsioUdpRequest
 	AsioUdpRequest(
 		asio::io_context *context,
-		const shared_ptr<udp::socket> &socket,
 		const udp::endpoint &endpoint,
 		const vector<uint8_t> &request,
 		const shared_ptr<const UdpHandler> &handler
-	) : socket(socket),
+	) : socket(*context, udp::endpoint(udp::v4(), 0)),
 	    endpoint(endpoint),
 	    request(request),
 	    handler(handler),
@@ -71,7 +69,7 @@ public:
 				placeholders::_1
 			)
 		);
-		socket->async_send_to(
+		socket.async_send_to(
 			asio::buffer(request),
 			endpoint,
 			bind(
@@ -89,7 +87,7 @@ public:
 			// @todo #71 endpoint в данном контексте определяется при приходе пакета
 			//  Но мы работаем с конкретным, и не должны принимать пакеты от других.
 			//  Это можно интерпретировать как ошибку
-			socket->async_receive_from(
+			socket.async_receive_from(
 				asio::buffer(reply),
 				endpoint,
 				bind(
@@ -118,13 +116,13 @@ public:
 	void handle_timeout(const error_code &ec)
 	{
 		if (!ec) {
-			socket->close();
+			socket.close();
 			handler->handle(make_shared<AsioUdpError>("Udp timeout"));
 		}
 	}
 
 private:
-	const shared_ptr<udp::socket> socket;
+	udp::socket socket;
 	udp::endpoint endpoint;
 	const vector<uint8_t> request;
 	const shared_ptr<const UdpHandler> handler;
@@ -144,14 +142,9 @@ void AsioUdpService::request(
 	const shared_ptr<const UdpHandler> &handler
 ) const
 {
-	auto socket = make_shared<udp::socket>(
-		ref(*context),
-		udp::endpoint(udp::v4(), 0)
-	);
-
 	// @todo #66 Необходимо использовать асинхронное определение
 	udp::resolver resolver(*context);
 	const auto endpoint = *resolver.resolve(udp::v4(), address, to_string(port)).begin();
 
-	make_shared<AsioUdpRequest>(context, socket, endpoint, request->raw(), handler)->start();
+	make_shared<AsioUdpRequest>(context, endpoint, request->raw(), handler)->start();
 }
