@@ -15,7 +15,6 @@
 #include <core/Listener.h>
 #include <core/LockAction.h>
 #include <core/AsioUdpService.h>
-#include <core/RetryStorage.h>
 #include <core/StatusAction.h>
 #include <core/TracedAction.h>
 #include <core/UnlockAction.h>
@@ -45,7 +44,7 @@ int main(int argc, char **argv)
 		// Получаем стартовую информацию (из БД)
 		scheduler->schedule(
 			make_shared<BootstrapTask>(
-				make_shared<RetryStorage>(storage, scheduler, 1min),
+				storage,
 				scheduler,
 				service
 			)

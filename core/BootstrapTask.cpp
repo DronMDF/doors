@@ -22,17 +22,24 @@ public:
 
 	void handle(const shared_ptr<const StorageResponse> &response) const override
 	{
-		const auto data = response->json();
-		for (const auto &c : data["controllers"]) {
+		try {
+			const auto data = response->json();
+			for (const auto &c : data["controllers"]) {
+				scheduler->schedule(
+					make_shared<InventoryTask>(
+						c["id"].get<uint32_t>(),
+						c["address"].get<string>(),
+						c["port"].get<in_port_t>(),
+						storage,
+						service,
+						scheduler
+					)
+				);
+			}
+		} catch (const exception &) {
 			scheduler->schedule(
-				make_shared<InventoryTask>(
-					c["id"].get<uint32_t>(),
-					c["address"].get<string>(),
-					c["port"].get<in_port_t>(),
-					storage,
-					service,
-					scheduler
-				)
+				make_shared<BootstrapTask>(storage, scheduler, service),
+				1min
 			);
 		}
 	}
@@ -53,10 +60,7 @@ BootstrapTask::BootstrapTask(
 
 void BootstrapTask::run() const
 {
-	DefaultStorage(
-		storage,
-		R"({ "controllers": [] })"_json
-	).query(
+	storage->query(
 		"/controller/",
 		make_shared<BootstrapStorageHandler>(service, scheduler, storage)
 	);
