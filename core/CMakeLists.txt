@@ -44,7 +44,6 @@ ADD_LIBRARY(
 	AsioUdpService.cpp
 	OkBytes.cpp
 	PredefinedStorage.cpp
-	RetryStorage.cpp
 	RawBytes.cpp
 	StatusAction.cpp
 	StatusTask.cpp
