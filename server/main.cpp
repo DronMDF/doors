@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 				LOCK,
 				make_shared<TracedAction>(
 					"LOCK",
-					make_shared<LockAction>()
+					make_shared<LockAction>(storage)
 				),
 				KEY_STATUS_REQ,
 				make_shared<TracedAction>(
