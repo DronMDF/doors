@@ -27,6 +27,7 @@ ADD_LIBRARY(
 	ChainBytes.cpp
 	DefaultStorage.cpp
 	DispatchedAction.cpp
+	ErrorBytes.cpp
 	HttpStorage.cpp
 	IdentBytes.cpp
 	ImmediatlyScheduler.cpp

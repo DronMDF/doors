@@ -31,3 +31,15 @@ uint32_t BytesLock::id() const
 	const Lock *reply = reinterpret_cast<const Lock *>(&bytes[0]);
 	return be32toh(reply->id);
 }
+
+uint32_t BytesLock::lock_id() const
+{
+	const Lock *reply = reinterpret_cast<const Lock *>(&bytes[0]);
+	return be32toh(reply->lock_no);
+}
+
+uint64_t BytesLock::key_id() const
+{
+	const Lock *reply = reinterpret_cast<const Lock *>(&bytes[0]);
+	return be64toh(reply->key);
+}
