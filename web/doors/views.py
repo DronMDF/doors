@@ -27,3 +27,8 @@ def controller_locks_update(request, pk):
 	)
 	return JsonResponse({})
 
+
+def controller_query_lock(request, pk, lk):
+	# @todo #??? Нужно проверить наличие контроллера и наличие указанного замка
+	#  А потом еще допустимость использования ключа для данного замка
+	return JsonResponse({'approve': True})
