@@ -46,4 +46,13 @@ class ControllerViewTest(TestCase):
 		locks = Lock.objects.filter(controller=controller)
 		self.assertListEqual(sorted(l.hwid for l in locks), [18])
 
-
+	def testControllerQueryLock(self):
+		controller = Controller.objects.create(address='3.2.3.2', port='7777')
+		lock = Lock.objects.create(hwid=3, controller=controller)
+		response = self.client.get(
+			'/controller/%u/lock/%u/lock?key=123456789'
+			% (controller.id, lock.id)
+		)
+		self.assertEqual(response.status_code, 200)
+		rep = json.loads(response.content.decode('utf8'))
+		self.assertTrue(rep['approve'])
