@@ -56,3 +56,14 @@ class ControllerViewTest(TestCase):
 		self.assertEqual(response.status_code, 200)
 		rep = json.loads(response.content.decode('utf8'))
 		self.assertTrue(rep['approve'])
+
+	def testControllerQueryUnlock(self):
+		controller = Controller.objects.create(address='3.2.3.2', port='7777')
+		lock = Lock.objects.create(hwid=3, controller=controller)
+		response = self.client.get(
+			'/controller/%u/lock/%u/unlock?key=123456789'
+			% (controller.id, lock.id)
+		)
+		self.assertEqual(response.status_code, 200)
+		rep = json.loads(response.content.decode('utf8'))
+		self.assertTrue(rep['approve'])
