@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 				UNLOCK,
 				make_shared<TracedAction>(
 					"UNLOCK",
-					make_shared<UnlockAction>()
+					make_shared<UnlockAction>(storage)
 				),
 				LOCK,
 				make_shared<TracedAction>(

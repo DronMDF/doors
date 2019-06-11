@@ -28,6 +28,18 @@ BytesUnlock::BytesUnlock(const vector<uint8_t> &bytes)
 
 uint32_t BytesUnlock::id() const
 {
-	const Unlock *reply = reinterpret_cast<const Unlock *>(&bytes[0]);
+	const auto *reply = reinterpret_cast<const Unlock *>(&bytes[0]);
 	return be32toh(reply->id);
+}
+
+uint32_t BytesUnlock::lock_id() const
+{
+	const auto *reply = reinterpret_cast<const Unlock *>(&bytes[0]);
+	return be32toh(reply->lock_no);
+}
+
+uint64_t BytesUnlock::key_id() const
+{
+	const auto *reply = reinterpret_cast<const Unlock *>(&bytes[0]);
+	return be64toh(reply->key);
 }

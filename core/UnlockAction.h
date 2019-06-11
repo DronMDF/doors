@@ -6,10 +6,15 @@
 #pragma once
 #include "Action.h"
 
+class Storage;
+
 class UnlockAction final : public Action {
 public:
+	explicit UnlockAction(const std::shared_ptr<const Storage> &storage);
 	bool process(
 		const std::vector<uint8_t> &request,
 		const std::shared_ptr<Socket> &socket
 	) const override;
+private:
+	const std::shared_ptr<const Storage> storage;
 };
