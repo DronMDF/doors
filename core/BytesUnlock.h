@@ -12,6 +12,8 @@ public:
 	explicit BytesUnlock(const std::vector<uint8_t> &bytes);
 
 	uint32_t id() const;
+	uint32_t lock_id() const;
+	uint64_t key_id() const;
 private:
 	const std::vector<uint8_t> bytes;
 };
