@@ -15,6 +15,7 @@
 #include <core/AsioUdpService.h>
 #include <core/PredefinedStorage.h>
 #include <core/TracedAction.h>
+#include "Benchmark.h"
 #include "LockTask.h"
 
 using namespace std;
@@ -26,27 +27,48 @@ int main(int argc, char **argv)
 	args::ValueFlag<in_port_t> port(parser, "port", "communication port", {'p'}, 5000);
 	args::ValueFlag<string> saddr(parser, "saddr", "server addr", {'S'}, "127.0.0.1");
 	args::ValueFlag<in_port_t> sport(parser, "sport", "server port", {'P'}, 5000);
+	args::ValueFlag<int> lock_count(parser, "lock_count", "Locks count", {'l'}, 10);
+	args::Flag benchmark(parser, "benchmark", "Stress lock/unlock requests", {'b'});
 
 	try {
 		parser.ParseCLI(argc, argv);
-
-		vector<int> locks = {1, 2, 4, 5, 6, 7, 8, 9, 10, 15};
 
 		asio::io_context io_context;
 		const auto service = make_shared<AsioUdpService>(&io_context);
 		const auto scheduler = make_shared<AsioScheduler>(&io_context);
 
-		for (const auto &l : locks) {
-			scheduler->schedule(
-				make_shared<LockTask>(
-					l,
-					args::get(saddr),
-					args::get(sport),
-					service,
-					scheduler
-				),
-				1min * l
-			);
+		vector<int> locks;
+		for (int i = 0; i < args::get(lock_count); i++) {
+			locks.push_back(i + 1);
+		}
+
+		if (benchmark) {
+			const auto stats = make_shared<BenchmarkStats>(locks.size());
+
+			for (const auto &l : locks) {
+				scheduler->schedule(
+					make_shared<LockTask>(
+						l,
+						args::get(saddr),
+						args::get(sport),
+						make_shared<BenchmarkUdpService>(service, stats),
+						scheduler
+					)
+				);
+			}
+		} else {
+			for (const auto &l : locks) {
+				scheduler->schedule(
+					make_shared<LockTask>(
+						l,
+						args::get(saddr),
+						args::get(sport),
+						service,
+						scheduler
+					),
+					1min * l
+				);
+			}
 		}
 
 		make_shared<Listener>(

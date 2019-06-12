@@ -28,12 +28,17 @@ public:
 	{
 		try {
 			BytesOk status(reply->raw());
+			// @todo #174 UnlockTask не должен планировать задания по закрытию,
+			//  Но для уведомления вышестоящей инстанции должен быть коллбек.
+			//  Который будет вызываться в случае успешного открытия замка
+			//  или неуспешного... Там же определяется политика протоколирования
 			cout << "Lock " << lock_id << " is unlocked" << endl;
 			scheduler->schedule(task, 1min);
 		} catch (const exception &e) {
 			cout << "Lock " << lock_id << " is not unlocked" << endl;
 		}
 	}
+
 private:
 	int lock_id;
 	const shared_ptr<Scheduler> scheduler;
