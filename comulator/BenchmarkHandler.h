@@ -8,12 +8,12 @@
 
 class Scheduler;
 
-class LockTaskHandler final :
+class BenchmarkHandler final :
 	public UdpHandler,
-	public std::enable_shared_from_this<LockTaskHandler>
+	public std::enable_shared_from_this<BenchmarkHandler>
 {
 public:
-	LockTaskHandler(
+	BenchmarkHandler(
 		int lock_id,
 		const std::string &address,
 		in_port_t port,

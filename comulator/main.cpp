@@ -16,6 +16,7 @@
 #include <core/PredefinedStorage.h>
 #include <core/TracedAction.h>
 #include "Benchmark.h"
+#include "BenchmarkHandler.h"
 #include "LockTask.h"
 #include "LockTaskHandler.h"
 
@@ -53,11 +54,7 @@ int main(int argc, char **argv)
 						args::get(saddr),
 						args::get(sport),
 						make_shared<BenchmarkUdpService>(service, stats),
-						// @todo #179 Для бенчмарка нужен специальный
-						//  обработчик, который будет планировать задания
-						//  немедленно и считать статистику по потерянным
-						//  запросам
-						make_shared<LockTaskHandler>(
+						make_shared<BenchmarkHandler>(
 							l,
 							args::get(saddr),
 							args::get(sport),
