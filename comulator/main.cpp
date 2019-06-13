@@ -17,6 +17,7 @@
 #include <core/TracedAction.h>
 #include "Benchmark.h"
 #include "LockTask.h"
+#include "LockTaskHandler.h"
 
 using namespace std;
 
@@ -52,7 +53,17 @@ int main(int argc, char **argv)
 						args::get(saddr),
 						args::get(sport),
 						make_shared<BenchmarkUdpService>(service, stats),
-						scheduler
+						// @todo #179 Для бенчмарка нужен специальный
+						//  обработчик, который будет планировать задания
+						//  немедленно и считать статистику по потерянным
+						//  запросам
+						make_shared<LockTaskHandler>(
+							l,
+							args::get(saddr),
+							args::get(sport),
+							service,
+							scheduler
+						)
 					)
 				);
 			}
@@ -64,7 +75,13 @@ int main(int argc, char **argv)
 						args::get(saddr),
 						args::get(sport),
 						service,
-						scheduler
+						make_shared<LockTaskHandler>(
+							l,
+							args::get(saddr),
+							args::get(sport),
+							service,
+							scheduler
+						)
 					),
 					1min * l
 				);

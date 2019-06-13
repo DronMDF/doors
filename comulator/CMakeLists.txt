@@ -20,6 +20,7 @@ ADD_EXECUTABLE(
 	main.cpp
 	Benchmark.cpp
 	LockTask.cpp
+	LockTaskHandler.cpp
 	UnlockTask.cpp
 )
 

@@ -11,6 +11,7 @@
 #include <core/UdpService.h>
 #include <core/UnlockBytes.h>
 #include "LockTask.h"
+#include "LockTaskHandler.h"
 
 using namespace std;
 
@@ -64,7 +65,19 @@ void UnlockTask::run() const
 		make_shared<UnlockReplyHandler>(
 			lock_id,
 			scheduler,
-			make_shared<LockTask>(lock_id, address, port, service, scheduler)
+			make_shared<LockTask>(
+				lock_id,
+				address,
+				port,
+				service,
+				make_shared<LockTaskHandler>(
+					lock_id,
+					address,
+					port,
+					service,
+					scheduler
+				)
+			)
 		)
 	);
 }
