@@ -4,59 +4,20 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #include "LockTask.h"
-#include <iostream>
-#include <core/Bytes.h>
-#include <core/BytesOk.h>
 #include <core/LockBytes.h>
-#include <core/Scheduler.h>
 #include <core/UdpService.h>
+#include "LockTaskHandler.h"
 #include "UnlockTask.h"
 
 using namespace std;
-
-class LockReplyHandler final : public UdpHandler {
-public:
-	explicit LockReplyHandler(
-		int lock_id,
-		const shared_ptr<Scheduler> &scheduler,
-		const shared_ptr<Task> &task
-	) : lock_id(lock_id), scheduler(scheduler), task(task)
-	{
-	}
-
-	void handle(const shared_ptr<const Bytes> &reply) const override
-	{
-		// @todo #113 В обработчике LockReplyHandler логика на исключениях
-		//  Может быть мне в качестве коллбеков к сервису навешивать экшины?
-		//  Там можно использовать DispatchedAction и разруливать запросы...
-		try {
-			BytesOk status(reply->raw());
-			// @todo #174 LockTask не должен планировать задания по открытию,
-			//  Но для уведомления вышестоящей инстанции должен быть коллбек.
-			//  Который будет вызываться в случае успешного закрытия замка.
-			//  В коллбеке же определяется политика протоколирования.
-			cout << "Lock " << lock_id << " is locked" << endl;
-			scheduler->schedule(task, 3min);
-		} catch (const exception &e) {
-			cout << "Lock " << lock_id << " is not locked" << endl;
-			// @todo #113 Если замок не открылся - нужно повторно обратиться к серверу.
-			//  Но эти попытки должны быть ограничены
-		}
-	}
-
-private:
-	int lock_id;
-	const shared_ptr<Scheduler> scheduler;
-	const shared_ptr<Task> task;
-};
 
 LockTask::LockTask(
 	int lock_id,
 	const string &address,
 	in_port_t port,
 	const shared_ptr<UdpService> &service,
-	const shared_ptr<Scheduler> &scheduler
-) : lock_id(lock_id), address(address), port(port), service(service), scheduler(scheduler)
+	const shared_ptr<const UdpHandler> &handler
+) : lock_id(lock_id), address(address), port(port), service(service), handler(handler)
 {
 }
 
@@ -71,10 +32,6 @@ void LockTask::run() const
 		address,
 		port,
 		make_shared<LockBytes>(0, lock_id, 0x123456789ABCDEF),
-		make_shared<LockReplyHandler>(
-			lock_id,
-			scheduler,
-			make_shared<UnlockTask>(lock_id, address, port, service, scheduler)
-		)
+		handler
 	);
 }
