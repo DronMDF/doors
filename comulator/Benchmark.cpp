@@ -43,8 +43,17 @@ void BenchmarkStats::time(const chrono::high_resolution_clock::duration &time)
 	times.push_back(time);
 	if (times.size() >= lock_count) {
 		sort(times.begin(), times.end());
-		chrono::duration<double> t99 = times[lock_count * 99 / 100];
-		cout << fmt::format("99%: {0:.6f}sec", t99.count()) << endl;
+		const auto fast = count_if(
+			times.begin(),
+			times.end(),
+			[](const auto &t){ return t < 5s; }
+		);
+		chrono::duration<double> t99 = times[fast * 99 / 100];
+		cout << fmt::format(
+			"99%: {0:.6f}sec, {1} lost",
+			t99.count(),
+			lock_count - fast
+		) << endl;
 		times.clear();
 	}
 }

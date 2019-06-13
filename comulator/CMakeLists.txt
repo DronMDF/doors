@@ -19,6 +19,7 @@ ADD_EXECUTABLE(
 	comulator
 	main.cpp
 	Benchmark.cpp
+	BenchmarkHandler.cpp
 	LockTask.cpp
 	LockTaskHandler.cpp
 	UnlockTask.cpp
