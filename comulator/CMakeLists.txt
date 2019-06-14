@@ -23,6 +23,7 @@ ADD_EXECUTABLE(
 	LockTask.cpp
 	LockTaskHandler.cpp
 	UnlockTask.cpp
+	UnlockTaskHandler.cpp
 )
 
 TARGET_LINK_LIBRARIES(
