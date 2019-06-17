@@ -4,26 +4,28 @@
 // of the MIT license.  See the LICENSE file for details.
 
 #pragma once
-#include <netinet/in.h>
-#include <core/Task.h>
+#include <core/UdpService.h>
 
-class UdpService;
-class UdpHandler;
+class Scheduler;
 
-class UnlockTask final : public Task {
+class UnlockTaskHandler final :
+	public UdpHandler,
+	public std::enable_shared_from_this<UnlockTaskHandler>
+{
 public:
-	UnlockTask(
+	UnlockTaskHandler(
 		int lock_id,
 		const std::string &address,
 		in_port_t port,
 		const std::shared_ptr<UdpService> &service,
-		const std::shared_ptr<const UdpHandler> &handler
+		const std::shared_ptr<Scheduler> &scheduler
 	);
-	void run() const override;
+
+	void handle(const std::shared_ptr<const Bytes> &reply) const override;
 private:
 	int lock_id;
 	const std::string address;
 	in_port_t port;
 	const std::shared_ptr<UdpService> service;
-	const std::shared_ptr<const UdpHandler> handler;
+	const std::shared_ptr<Scheduler> scheduler;
 };

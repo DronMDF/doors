@@ -46,6 +46,7 @@ int main(int argc, char **argv)
 
 		if (benchmark) {
 			const auto stats = make_shared<BenchmarkStats>(locks.size());
+			const auto benchserv = make_shared<BenchmarkUdpService>(service, stats);
 
 			for (const auto &l : locks) {
 				scheduler->schedule(
@@ -53,12 +54,12 @@ int main(int argc, char **argv)
 						l,
 						args::get(saddr),
 						args::get(sport),
-						make_shared<BenchmarkUdpService>(service, stats),
+						benchserv,
 						make_shared<BenchmarkHandler>(
 							l,
 							args::get(saddr),
 							args::get(sport),
-							service,
+							benchserv,
 							scheduler
 						)
 					)

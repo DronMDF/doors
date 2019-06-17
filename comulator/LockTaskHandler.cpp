@@ -10,6 +10,7 @@
 #include <core/Scheduler.h>
 #include "LockTask.h"
 #include "UnlockTask.h"
+#include "UnlockTaskHandler.h"
 
 using namespace std;
 
@@ -32,7 +33,19 @@ void LockTaskHandler::handle(const shared_ptr<const Bytes> &reply) const
 		BytesOk status(reply->raw());
 		cout << "Lock " << lock_id << " is locked" << endl;
 		scheduler->schedule(
-			make_shared<UnlockTask>(lock_id, address, port, service, scheduler),
+			make_shared<UnlockTask>(
+				lock_id,
+				address,
+				port,
+				service,
+				make_shared<UnlockTaskHandler>(
+					lock_id,
+					address,
+					port,
+					service,
+					scheduler
+				)
+			),
 			3min
 		);
 	} catch (const exception &e) {
@@ -41,7 +54,7 @@ void LockTaskHandler::handle(const shared_ptr<const Bytes> &reply) const
 		//  Но эти попытки должны быть ограничены
 		scheduler->schedule(
 			make_shared<LockTask>(lock_id, address, port, service, shared_from_this()),
-			3min
+			10s
 		);
 	}
 }

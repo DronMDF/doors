@@ -29,7 +29,7 @@ void BenchmarkHandler::handle(const shared_ptr<const Bytes> &reply) const
 	try {
 		BytesOk status(reply->raw());
 		scheduler->schedule(
-			make_shared<UnlockTask>(lock_id, address, port, service, scheduler)
+			make_shared<UnlockTask>(lock_id, address, port, service, shared_from_this())
 		);
 	} catch (const exception &e) {
 		scheduler->schedule(

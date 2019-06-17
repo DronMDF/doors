@@ -15,44 +15,13 @@
 
 using namespace std;
 
-class UnlockReplyHandler final : public UdpHandler {
-public:
-	explicit UnlockReplyHandler(
-		int lock_id,
-		const shared_ptr<Scheduler> &scheduler,
-		const shared_ptr<Task> &task
-	) : lock_id(lock_id), scheduler(scheduler), task(task)
-	{
-	}
-
-	void handle(const shared_ptr<const Bytes> &reply) const override
-	{
-		try {
-			BytesOk status(reply->raw());
-			// @todo #174 UnlockTask не должен планировать задания по закрытию,
-			//  Но для уведомления вышестоящей инстанции должен быть коллбек.
-			//  Который будет вызываться в случае успешного открытия замка
-			//  или неуспешного... Там же определяется политика протоколирования
-			cout << "Lock " << lock_id << " is unlocked" << endl;
-			scheduler->schedule(task, 1min);
-		} catch (const exception &e) {
-			cout << "Lock " << lock_id << " is not unlocked" << endl;
-		}
-	}
-
-private:
-	int lock_id;
-	const shared_ptr<Scheduler> scheduler;
-	const shared_ptr<Task> task;
-};
-
 UnlockTask::UnlockTask(
 	int lock_id,
 	const string &address,
 	in_port_t port,
 	const shared_ptr<UdpService> &service,
-	const shared_ptr<Scheduler> &scheduler
-) : lock_id(lock_id), address(address), port(port), service(service), scheduler(scheduler)
+	const shared_ptr<const UdpHandler> &handler
+) : lock_id(lock_id), address(address), port(port), service(service), handler(handler)
 {
 }
 
@@ -62,22 +31,6 @@ void UnlockTask::run() const
 		address,
 		port,
 		make_shared<UnlockBytes>(0, lock_id, 0x123456789ABCDEF),
-		make_shared<UnlockReplyHandler>(
-			lock_id,
-			scheduler,
-			make_shared<LockTask>(
-				lock_id,
-				address,
-				port,
-				service,
-				make_shared<LockTaskHandler>(
-					lock_id,
-					address,
-					port,
-					service,
-					scheduler
-				)
-			)
-		)
+		handler
 	);
 }
