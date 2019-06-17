@@ -38,8 +38,19 @@ BenchmarkStats::BenchmarkStats(size_t lock_count)
 {
 }
 
+chrono::duration<double> BenchmarkStats::percentil_point(size_t n) const
+{
+	return times[n / 100];
+}
+
 void BenchmarkStats::time(const chrono::high_resolution_clock::duration &time)
 {
+	if (times.empty()) {
+		first = chrono::high_resolution_clock::now();
+	}
+	if (time < 5s) {
+		last = chrono::high_resolution_clock::now();
+	}
 	times.push_back(time);
 	if (times.size() >= lock_count) {
 		sort(times.begin(), times.end());
@@ -48,10 +59,13 @@ void BenchmarkStats::time(const chrono::high_resolution_clock::duration &time)
 			times.end(),
 			[](const auto &t){ return t < 5s; }
 		);
-		chrono::duration<double> t99 = times[fast * 99 / 100];
+		chrono::duration<double> interval = last - first;
 		cout << fmt::format(
-			"99%: {0:.6f}sec, {1} lost",
-			t99.count(),
+			"STATS: {0:.6f}-{1:.6f}-{2:.6f}sec, {3:.6f} mps, {4} lost",
+			percentil_point(fast * 5).count(),
+			percentil_point(fast * 75).count(),
+			percentil_point(fast * 95).count(),
+			fast / interval.count(),
 			lock_count - fast
 		) << endl;
 		times.clear();
