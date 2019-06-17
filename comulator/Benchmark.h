@@ -15,6 +15,10 @@ public:
 private:
 	const size_t lock_count;
 	std::vector<std::chrono::high_resolution_clock::duration> times;
+	std::chrono::high_resolution_clock::time_point first;
+	std::chrono::high_resolution_clock::time_point last;
+
+	std::chrono::duration<double> percentil_point(size_t n) const;
 };
 
 class BenchmarkUdpService final : public UdpService {
