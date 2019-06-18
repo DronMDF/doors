@@ -4,6 +4,7 @@
 # of the MIT license.  See the LICENSE file for details.
 
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -37,3 +38,7 @@ def controller_query_unlock(request, pk, lk):
 	# @todo #??? Нужно проверить наличие контроллера и наличие указанного замка
 	#  А потом еще допустимость использования ключа для данного замка
 	return JsonResponse({'approve': True})
+
+def controllers(request):
+	# @todo #141 Наполнить controllers.xml context содержательной информацией о контроллерах
+	return render(request, 'controllers.xml', content_type='application/xml')
