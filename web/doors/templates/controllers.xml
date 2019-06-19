@@ -2,4 +2,10 @@
 {% load static %}
 <?xml-stylesheet type="text/xsl" href="{% static 'controllers.xsl' %}"?>
 <controllers>
+		{% for controller in controllers %}
+		<controller id="{{controller.id}}">
+			<address>{{controller.address}}</address>
+			<port>{{controller.port}}</port>
+		</controller>
+		{% endfor %}
 </controllers>

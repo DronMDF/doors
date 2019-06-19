@@ -40,5 +40,7 @@ def controller_query_unlock(request, pk, lk):
 	return JsonResponse({'approve': True})
 
 def controllers(request):
-	# @todo #141 Наполнить controllers.xml context содержательной информацией о контроллерах
-	return render(request, 'controllers.xml', content_type='application/xml')
+	context = {
+		'controllers': Controller.objects.all()
+	}
+	return render(request, 'controllers.xml', context, 'application/xml')
