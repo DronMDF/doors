@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{% load static %}
+<?xml-stylesheet type="text/xsl" href="{% static 'controller.xsl' %}"?>
+<controller>
+		<address>{{controller.address}}</address>
+		<port>{{controller.port}}</port>
+		{% for lock in locks %}
+		<lock id="{{lock.id}}">
+			<hwid>{{lock.hwid}}</hwid>
+		</lock>
+		{% endfor %}
+</controller>

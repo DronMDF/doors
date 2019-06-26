@@ -4,7 +4,7 @@
 # of the MIT license.  See the LICENSE file for details.
 
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -44,3 +44,11 @@ def controllers(request):
 		'controllers': Controller.objects.all()
 	}
 	return render(request, 'controllers.xml', context, 'application/xml')
+
+def controller(request, pk):
+	controller = get_object_or_404(Controller, pk=pk)
+	context = {
+		'controller': controller,
+		'locks': Lock.objects.filter(controller=controller)
+	}
+	return render(request, 'controller.xml', context, 'application/xml')
