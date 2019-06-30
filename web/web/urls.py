@@ -29,9 +29,12 @@ urlpatterns = [
     path('controller/<int:pk>/lock/<int:lk>/unlock', controller_query_unlock),
     # Новое API (на базе xml)
     path('controllers/', controllers),
+    # @todo #195 Если мы хотим обращаться, к контроллеру по адресу/порту
+    #  нужно обращаться к controllers и формировать запрос.
     path('controllers/<int:pk>/', controller),
-    # @todo #193 Добавить урл для действий с замком locks/<pk>/
-
+    # @todo #195 Если мы хотим модифициировать состояние замка по hwid,
+    #  нужно обращаться к контроллеру. Контроллер странслирует запрос в lock.id
+    path('locks/<int:pk>/', lock),
     # По умолчанию редиректим на список контроллеров
     path('', RedirectView.as_view(url='/controllers/')),
     # Админка

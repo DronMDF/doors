@@ -4,7 +4,6 @@
 # of the MIT license.  See the LICENSE file for details.
 
 from django.contrib.staticfiles import finders
-from django.contrib.staticfiles.storage import staticfiles_storage
 from django.test import TestCase
 from xml.etree import ElementTree
 from doors.models import Controller, Lock
@@ -22,6 +21,10 @@ class ControllersTest(TestCase):
 		self.assertEqual(response.status_code, 200)
 		xml = ElementTree.fromstring(response.content.decode('utf8'))
 		self.assertIsNotNone(xml.find(".//controller[address='19.6.22.56']"))
+
+	def testControllerXsl(self):
+		xsl_path = finders.find('controller.xsl')
+		self.assertIsInstance(xsl_path, str)
 
 	def testControllerXml(self):
 		controller = Controller.objects.create(address='26.6.22.27', port='5000')

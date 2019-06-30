@@ -52,3 +52,11 @@ def controller(request, pk):
 		'locks': Lock.objects.filter(controller=controller)
 	}
 	return render(request, 'controller.xml', context, 'application/xml')
+
+def lock(request, pk):
+	lock = get_object_or_404(Lock, pk=pk)
+	context = {
+		'lock': lock,
+	}
+	return render(request, 'lock.xml', context, 'application/xml')
+
