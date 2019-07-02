@@ -3,4 +3,9 @@
 <?xml-stylesheet type="text/xsl" href="{% static 'lock.xsl' %}"?>
 <lock id='{{lock.id}}'>
 	<hwid>{{lock.hwid}}</hwid>
+	{% if lock.open %}
+	<open>1</open>
+	{% else %}
+	<open>0</open>
+	{% endif %}
 </lock>

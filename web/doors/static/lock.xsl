@@ -11,8 +11,11 @@
 <title>Замок <xsl:value-of select="hwid"/></title>
 </head>
 <body>
-	<!-- @todo #195 Состояние замка хранится в БД и пробрасывается через API -->
-	Состояние замка: неизвестно
+	Состояние замка:
+	<xsl:choose>
+		<xsl:when test="open">открыт</xsl:when>
+		<xsl:otherwise>закрыт</xsl:otherwise>
+	</xsl:choose>
 </body>
 </html>
 </xsl:template>

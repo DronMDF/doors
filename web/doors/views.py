@@ -29,14 +29,13 @@ def controller_locks_update(request, pk):
 	return JsonResponse({})
 
 
+# @todo #198 Нужно проверить наличие контроллера и наличие указанного замка
+#  А потом еще допустимость использования ключа для данного замка
+# @todo #198 отразить в БД новое состояние замка (открыт/закрыт)
 def controller_query_lock(request, pk, lk):
-	# @todo #??? Нужно проверить наличие контроллера и наличие указанного замка
-	#  А потом еще допустимость использования ключа для данного замка
 	return JsonResponse({'approve': True})
 
 def controller_query_unlock(request, pk, lk):
-	# @todo #??? Нужно проверить наличие контроллера и наличие указанного замка
-	#  А потом еще допустимость использования ключа для данного замка
 	return JsonResponse({'approve': True})
 
 def controllers(request):

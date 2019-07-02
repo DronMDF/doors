@@ -23,3 +23,19 @@ class LocksTest(TestCase):
 		self.assertEqual(xml.tag, 'lock')
 		self.assertEqual(xml.attrib['id'], str(lock.id))
 		self.assertEqual(xml.find("./hwid").text, '20')
+
+	def testLockXmlOpen(self):
+		controller = Controller.objects.create(address='30.6.23.27', port='5000')
+		lock = Lock.objects.create(hwid=20, controller=controller, open=True)
+		response = self.client.get('/locks/%u/' % lock.id)
+		self.assertEqual(response.status_code, 200)
+		xml = ElementTree.fromstring(response.content.decode('utf8'))
+		self.assertEqual(xml.find("./open").text, '1')
+
+	def testLockXmlClosed(self):
+		controller = Controller.objects.create(address='30.6.23.27', port='5000')
+		lock = Lock.objects.create(hwid=20, controller=controller, open=False)
+		response = self.client.get('/locks/%u/' % lock.id)
+		self.assertEqual(response.status_code, 200)
+		xml = ElementTree.fromstring(response.content.decode('utf8'))
+		self.assertEqual(xml.find("./open").text, '0')
