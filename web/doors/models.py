@@ -15,3 +15,4 @@ class Controller(models.Model):
 class Lock(models.Model):
 	controller = models.ForeignKey(Controller, on_delete=models.CASCADE)
 	hwid = models.IntegerField()
+	open = models.BooleanField(default=True)
