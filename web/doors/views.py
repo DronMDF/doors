@@ -37,17 +37,20 @@ def controller_query_lock(request, pk, lk):
 	lock.save()
 	return JsonResponse({'approve': True})
 
+
 def controller_query_unlock(request, pk, lk):
 	lock = get_object_or_404(Lock, controller_id=pk, id=lk)
 	lock.open = True
 	lock.save()
 	return JsonResponse({'approve': True})
 
+
 def controllers(request):
 	context = {
 		'controllers': Controller.objects.all()
 	}
 	return render(request, 'controllers.xml', context, 'application/xml')
+
 
 def controller(request, pk):
 	controller = get_object_or_404(Controller, pk=pk)
@@ -57,10 +60,10 @@ def controller(request, pk):
 	}
 	return render(request, 'controller.xml', context, 'application/xml')
 
+
 def lock(request, pk):
 	lock = get_object_or_404(Lock, pk=pk)
 	context = {
 		'lock': lock,
 	}
 	return render(request, 'lock.xml', context, 'application/xml')
-
