@@ -31,11 +31,16 @@ def controller_locks_update(request, pk):
 
 # @todo #198 Нужно проверить наличие контроллера и наличие указанного замка
 #  А потом еще допустимость использования ключа для данного замка
-# @todo #198 отразить в БД новое состояние замка (открыт/закрыт)
 def controller_query_lock(request, pk, lk):
+	lock = get_object_or_404(Lock, controller_id=pk, id=lk)
+	lock.open = False
+	lock.save()
 	return JsonResponse({'approve': True})
 
 def controller_query_unlock(request, pk, lk):
+	lock = get_object_or_404(Lock, controller_id=pk, id=lk)
+	lock.open = True
+	lock.save()
 	return JsonResponse({'approve': True})
 
 def controllers(request):

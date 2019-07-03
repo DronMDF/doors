@@ -57,6 +57,16 @@ class ControllerViewTest(TestCase):
 		rep = json.loads(response.content.decode('utf8'))
 		self.assertTrue(rep['approve'])
 
+	def testControllerLockedByQuery(self):
+		controller = Controller.objects.create(address='3.6.22.39', port='7777')
+		lock = Lock.objects.create(hwid=3, controller=controller, open=True)
+		response = self.client.get(
+			'/controller/%u/lock/%u/lock?key=123456789'
+			% (controller.id, lock.id)
+		)
+		self.assertEqual(response.status_code, 200)
+		self.assertFalse(Lock.objects.get(pk=lock.id).open)
+
 	def testControllerQueryUnlock(self):
 		controller = Controller.objects.create(address='3.2.3.2', port='7777')
 		lock = Lock.objects.create(hwid=3, controller=controller)
@@ -67,3 +77,13 @@ class ControllerViewTest(TestCase):
 		self.assertEqual(response.status_code, 200)
 		rep = json.loads(response.content.decode('utf8'))
 		self.assertTrue(rep['approve'])
+
+	def testControllerUnlockedByQuery(self):
+		controller = Controller.objects.create(address='3.6.22.41', port='7777')
+		lock = Lock.objects.create(hwid=3, controller=controller, open=False)
+		response = self.client.get(
+			'/controller/%u/lock/%u/unlock?key=123456789'
+			% (controller.id, lock.id)
+		)
+		self.assertEqual(response.status_code, 200)
+		self.assertTrue(Lock.objects.get(pk=lock.id).open)
