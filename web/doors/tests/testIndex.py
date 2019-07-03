@@ -5,6 +5,7 @@
 
 from django.test import TestCase
 
+
 class IndexTest(TestCase):
 	def testRedirectToControllers(self):
 		response = self.client.get('/')

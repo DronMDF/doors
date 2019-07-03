@@ -10,8 +10,10 @@ from .models import Controller, Lock
 class ControllerAdmin(admin.ModelAdmin):
 	list_display = ['address', 'port']
 
+
 class LockAdmin(admin.ModelAdmin):
 	list_display = ['controller', 'hwid']
+
 
 admin.site.register(Controller, ControllerAdmin)
 admin.site.register(Lock, LockAdmin)
