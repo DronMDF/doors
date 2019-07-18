@@ -49,9 +49,12 @@ LockAction::LockAction(const shared_ptr<const Storage> &storage)
 {
 }
 
-bool LockAction::process(const vector<uint8_t> &request, const shared_ptr<Socket> &socket) const
+bool LockAction::process(
+	const shared_ptr<const Bytes> &request,
+	const shared_ptr<Socket> &socket
+) const
 {
-	const auto lock = make_shared<BytesLock>(request);
+	const auto lock = make_shared<BytesLock>(request->raw());
 	storage->query(
 		fmt::format(
 			"/controller/{}/lock/{}/lock?key={}",

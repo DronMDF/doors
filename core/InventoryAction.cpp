@@ -44,15 +44,16 @@ InventoryAction::InventoryAction(const shared_ptr<Storage> &storage)
 }
 
 bool InventoryAction::process(
-	const vector<uint8_t> &request,
+	const shared_ptr<const Bytes> &request,
 	const shared_ptr<Socket> &socket
 ) const
 {
-	if (request.size() < sizeof(uint32_t) * 2) {
+	const auto raw = request->raw();
+	if (raw.size() < sizeof(uint32_t) * 2) {
 		throw runtime_error("Invalid request");
 	}
 
-	const auto *req = reinterpret_cast<const InventoryReq *>(&request[0]);
+	const auto *req = reinterpret_cast<const InventoryReq *>(&raw[0]);
 	if (be32toh(req->version) != VERSION) {
 		throw runtime_error("Invalid request version");
 	}

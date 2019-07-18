@@ -14,7 +14,7 @@ public:
 	explicit InventoryAction(const std::shared_ptr<Storage> &storage);
 
 	bool process(
-		const std::vector<uint8_t> &request,
+		const std::shared_ptr<const Bytes> &request,
 		const std::shared_ptr<Socket> &socket
 	) const override;
 

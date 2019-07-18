@@ -51,9 +51,12 @@ UnlockAction::UnlockAction(const shared_ptr<const Storage> &storage)
 {
 }
 
-bool UnlockAction::process(const vector<uint8_t> &request, const shared_ptr<Socket> &socket) const
+bool UnlockAction::process(
+	const shared_ptr<const Bytes> &request,
+	const shared_ptr<Socket> &socket
+) const
 {
-	const auto unlock = make_shared<BytesUnlock>(request);
+	const auto unlock = make_shared<BytesUnlock>(request->raw());
 	storage->query(
 		fmt::format(
 			"/controller/{}/lock/{}/unlock?key={}",
