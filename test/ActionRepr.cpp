@@ -24,8 +24,6 @@ string ActionRepr::asString() const
 	// htonl all
 	vector<uint32_t> rw;
 	transform(request.begin(), request.end(), back_inserter(rw), htonl);
-	vector<uint8_t> rb(rw.size() * sizeof(uint32_t));
-	memcpy(&rb[0], &rw[0], rb.size());
 
 	vector<uint8_t> reply;
 	action->process(
