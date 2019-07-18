@@ -14,7 +14,10 @@ TestAction::TestAction(const vector<uint32_t> &reply)
 {
 }
 
-bool TestAction::process(const vector<uint8_t> &request, const shared_ptr<Socket> &socket) const
+bool TestAction::process(
+	const shared_ptr<const Bytes> &request,
+	const shared_ptr<Socket> &socket
+) const
 {
 	vector<uint32_t> berep;
 	for (const auto &v : reply) {

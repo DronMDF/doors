@@ -6,6 +6,7 @@
 #include "StatusAction.h"
 #include <cstring>
 #include <protocol.h>
+#include "Bytes.h"
 #include "Scheduler.h"
 #include "StatusTask.h"
 
@@ -19,13 +20,17 @@ StatusAction::StatusAction(
 {
 }
 
-bool StatusAction::process(const vector<uint8_t> &request, const shared_ptr<Socket> &socket) const
+bool StatusAction::process(
+	const shared_ptr<const Bytes> &request,
+	const shared_ptr<Socket> &socket
+) const
 {
-	if (request.size() < sizeof(KeyStatusRequest)) {
+	const auto raw = request->raw();
+	if (raw.size() < sizeof(KeyStatusRequest)) {
 		return false;
 	}
 
-	const auto *req = reinterpret_cast<const KeyStatusRequest *>(&request[0]);
+	const auto *req = reinterpret_cast<const KeyStatusRequest *>(&raw[0]);
 	if (ntohl(req->command) != KEY_STATUS_REQ) {
 		return false;
 	}

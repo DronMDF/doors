@@ -6,8 +6,9 @@
 #include "Listener.h"
 #include <functional>
 #include <iostream>
-#include <core/Action.h>
+#include "Action.h"
 #include "AsioSocket.h"
+#include "RawBytes.h"
 
 using namespace std;
 using asio::ip::udp;
@@ -48,10 +49,8 @@ void Listener::do_receive()
 
 void Listener::process_request(size_t bytes_recvd)
 {
-	auto et = data_.begin();
-	advance(et, bytes_recvd);
 	bool success = action->process(
-		vector<uint8_t>(data_.begin(), et),
+		make_shared<RawBytes>(&data_[0], bytes_recvd),
 		make_shared<AsioSocket>(socket_, sender_endpoint_)
 	);
 	if (!success) {

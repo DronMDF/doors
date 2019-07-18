@@ -15,7 +15,10 @@ TracedAction::TracedAction(const string &tag, const shared_ptr<const Action> &ac
 {
 }
 
-bool TracedAction::process(const vector<uint8_t> &request, const shared_ptr<Socket> &socket) const
+bool TracedAction::process(
+	const shared_ptr<const Bytes> &request,
+	const shared_ptr<Socket> &socket
+) const
 {
 	std::time_t t = std::time(nullptr);
 	std::tm tm = *std::localtime(&t);

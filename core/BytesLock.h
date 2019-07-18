@@ -9,6 +9,7 @@
 
 class BytesLock final {
 public:
+	// @todo #119 Добавить BytesLock конструктор из Bytes
 	explicit BytesLock(const std::vector<uint8_t> &bytes);
 
 	uint32_t id() const;
