@@ -20,6 +20,7 @@ ADD_EXECUTABLE(
 	LockBytesTest.cpp
 	LogUdpService.cpp
 	LogStorage.cpp
+	RawBytesTest.cpp
 	SaboteurStorage.cpp
 	StatusActionTest.cpp
 	TestAction.cpp
