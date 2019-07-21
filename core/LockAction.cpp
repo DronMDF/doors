@@ -49,7 +49,7 @@ LockAction::LockAction(const shared_ptr<const Storage> &storage)
 {
 }
 
-bool LockAction::process(
+void LockAction::process(
 	const shared_ptr<const Bytes> &request,
 	const shared_ptr<Socket> &socket
 ) const
@@ -66,5 +66,4 @@ bool LockAction::process(
 		),
 		make_shared<LockActionStorageHandler>(lock, socket)
 	);
-	return true;
 }

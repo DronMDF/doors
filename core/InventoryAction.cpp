@@ -43,7 +43,7 @@ InventoryAction::InventoryAction(const shared_ptr<Storage> &storage)
 {
 }
 
-bool InventoryAction::process(
+void InventoryAction::process(
 	const shared_ptr<const Bytes> &request,
 	const shared_ptr<Socket> &socket
 ) const
@@ -68,5 +68,4 @@ bool InventoryAction::process(
 	).query("/locks", make_shared<InventoryStorageHandler>(*req, socket));
 	// @todo #85 InventoryAction возвращает результат асинхронно.
 	//  Мы все делаем асинхронно.
-	return true;
 }

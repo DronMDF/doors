@@ -51,7 +51,7 @@ UnlockAction::UnlockAction(const shared_ptr<const Storage> &storage)
 {
 }
 
-bool UnlockAction::process(
+void UnlockAction::process(
 	const shared_ptr<const Bytes> &request,
 	const shared_ptr<Socket> &socket
 ) const
@@ -68,5 +68,4 @@ bool UnlockAction::process(
 		),
 		make_shared<UnlockActionStorageHandler>(unlock, socket)
 	);
-	return true;
 }

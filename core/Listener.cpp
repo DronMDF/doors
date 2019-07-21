@@ -49,14 +49,10 @@ void Listener::do_receive()
 
 void Listener::process_request(size_t bytes_recvd)
 {
-	bool success = action->process(
+	action->process(
 		make_shared<RawBytes>(&data_[0], bytes_recvd),
 		make_shared<AsioSocket>(socket_, sender_endpoint_)
 	);
-	if (!success) {
-		// @todo #24 Логика на исключениях
-		throw runtime_error("Unknown request command");
-	}
 }
 
 void Listener::handle_receive(error_code ec, size_t bytes_recvd)

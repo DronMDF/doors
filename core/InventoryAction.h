@@ -13,7 +13,7 @@ class InventoryAction final : public Action {
 public:
 	explicit InventoryAction(const std::shared_ptr<Storage> &storage);
 
-	bool process(
+	void process(
 		const std::shared_ptr<const Bytes> &request,
 		const std::shared_ptr<Socket> &socket
 	) const override;
