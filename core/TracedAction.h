@@ -11,7 +11,7 @@ class TracedAction final : public Action {
 public:
 	TracedAction(const std::string &tag, const std::shared_ptr<const Action> &action);
 
-	bool process(
+	void process(
 		const std::shared_ptr<const Bytes> &request,
 		const std::shared_ptr<Socket> &socket
 	) const override;

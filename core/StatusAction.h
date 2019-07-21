@@ -16,7 +16,7 @@ public:
 		const std::shared_ptr<Scheduler> &scheduler
 	);
 
-	bool process(
+	void process(
 		const std::shared_ptr<const Bytes> &request,
 		const std::shared_ptr<Socket> &socket
 	) const override;

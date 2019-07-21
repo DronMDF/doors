@@ -14,7 +14,7 @@ TestAction::TestAction(const vector<uint32_t> &reply)
 {
 }
 
-bool TestAction::process(
+void TestAction::process(
 	const shared_ptr<const Bytes> &request,
 	const shared_ptr<Socket> &socket
 ) const
@@ -26,5 +26,4 @@ bool TestAction::process(
 	vector<uint8_t> rv(berep.size() * sizeof(uint32_t));
 	memcpy(&rv[0], &berep[0], rv.size());
 	socket->send(rv);
-	return true;
 }

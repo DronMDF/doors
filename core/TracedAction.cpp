@@ -15,7 +15,7 @@ TracedAction::TracedAction(const string &tag, const shared_ptr<const Action> &ac
 {
 }
 
-bool TracedAction::process(
+void TracedAction::process(
 	const shared_ptr<const Bytes> &request,
 	const shared_ptr<Socket> &socket
 ) const
@@ -23,5 +23,5 @@ bool TracedAction::process(
 	std::time_t t = std::time(nullptr);
 	std::tm tm = *std::localtime(&t);
 	cout << put_time(&tm, "%T") << " " << tag << " action" << endl;
-	return action->process(request, socket);
+	action->process(request, socket);
 }

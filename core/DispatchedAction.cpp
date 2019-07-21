@@ -14,7 +14,7 @@ DispatchedAction::DispatchedAction(const map<uint32_t, shared_ptr<Action>> &acti
 {
 }
 
-bool DispatchedAction::process(
+void DispatchedAction::process(
 	const shared_ptr<const Bytes> &request,
 	const shared_ptr<Socket> &socket
 ) const
@@ -27,5 +27,5 @@ bool DispatchedAction::process(
 	vector<uint32_t> header(2);
 	memcpy(&header[0], &raw[0], sizeof(uint32_t) * 2);
 
-	return actions.at(be32toh(header[1]))->process(request, socket);
+	actions.at(be32toh(header[1]))->process(request, socket);
 }
