@@ -17,6 +17,7 @@
 #include "List32BytesTest.h"
 #include "List64BytesTest.h"
 #include "LockBytesTest.h"
+#include "RawBytesTest.h"
 #include "StatusActionTest.h"
 
 using namespace std;
@@ -38,6 +39,7 @@ int main(int, char **)
 			make_shared<List32BytesTest>(),
 			make_shared<List64BytesTest>(),
 			make_shared<LockBytesTest>(),
+			make_shared<RawBytesTest>(),
 			make_shared<StatusActionTest>()
 		)
 	).result();

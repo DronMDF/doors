@@ -9,7 +9,7 @@
 
 class RawBytes final : public Bytes {
 public:
-	// @todo #119 Добавить к RawBytes первичный конструктор из вектора
+	explicit RawBytes(const std::vector<uint8_t> &bytes);
 	RawBytes(const void *ptr, size_t size);
 
 	std::vector<uint8_t> raw() const override;

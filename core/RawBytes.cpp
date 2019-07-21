@@ -7,10 +7,17 @@
 
 using namespace std;
 
+RawBytes::RawBytes(const vector<uint8_t> &bytes)
+	: bytes(bytes)
+{
+}
+
 RawBytes::RawBytes(const void *ptr, size_t size)
-	: bytes(
-		static_cast<const uint8_t *>(ptr),
-		static_cast<const uint8_t *>(ptr) + size
+	: RawBytes(
+		vector<uint8_t>(
+			static_cast<const uint8_t *>(ptr),
+			static_cast<const uint8_t *>(ptr) + size
+		)
 	)
 {
 }
